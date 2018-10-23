@@ -1,0 +1,17 @@
+@import './app.module.scss';
+
+.filedrop {
+  width: 700px;
+  border: 4px dashed white;
+  color: white;
+  padding: 40px;
+  margin: 0 auto;
+}
+
+.filedrop-on {
+  width: 700px;
+  border: 4px dashed $main-color;
+  color: white;
+  padding: 40px;
+  margin: 0 auto;
+}

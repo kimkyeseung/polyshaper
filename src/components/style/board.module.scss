@@ -1,0 +1,17 @@
+@import './app.module.scss';
+
+.board {
+  position: relative;
+  display: inline-block;
+}
+
+.canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.uploaded_image {
+  position: relative;
+}

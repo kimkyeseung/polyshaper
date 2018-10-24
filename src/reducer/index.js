@@ -1,8 +1,9 @@
 import { cloneDeep } from 'lodash';
-import { IMAGE_UPLOAD } from '../constants/actionTypes';
+import { IMAGE_UPLOAD, MAKE_VERTEX } from '../constants/actionTypes';
 
 const defaultState = {
-  uploadedImage: null
+  uploadedImage: null,
+  dotNode: [],
 }
 
 const reducer = (state = defaultState, action) => {
@@ -10,6 +11,10 @@ const reducer = (state = defaultState, action) => {
   switch (action.type) {
     case IMAGE_UPLOAD: {
       newState.uploadedImage = action.imageFile;
+      return newState;
+    }
+    case MAKE_VERTEX: {
+      newState.dotNode.push({x: action.point.x, y: action.point.y});
       return newState;
     }
     default: {

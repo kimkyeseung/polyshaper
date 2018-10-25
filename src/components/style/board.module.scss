@@ -15,3 +15,11 @@
 .uploaded_image {
   position: relative;
 }
+
+.colorCanvas {
+  position: absolute;
+  display: none;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}

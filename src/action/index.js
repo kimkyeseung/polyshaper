@@ -1,4 +1,6 @@
-import { IMAGE_UPLOAD, MAKE_VERTEX } from '../constants/actionTypes';
+import { IMAGE_UPLOAD, MAKE_FACE, MAKE_VERTEX } from '../constants/actionTypes';
+
+let faceId = 0;
 
 export const uploadImageHandler = imageFile => {
   return {
@@ -7,9 +9,18 @@ export const uploadImageHandler = imageFile => {
   };
 };
 
-export const makeVertex = (x, y) => {
+export const makeFace = (vertices, color) => {
+  return {
+    type: MAKE_FACE,
+    vertices,
+    id: faceId++,
+    color
+  };
+};
+
+export const makeVertex = vertex => {
   return {
     type: MAKE_VERTEX,
-    point: {x, y}
-  }
-}
+    vertex
+  };
+};

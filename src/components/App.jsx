@@ -15,8 +15,10 @@ class App extends Component {
           this.props.uploadedImage
             ? <Board
               uploadedImage={this.props.uploadedImage}
+              makeFace={this.props.makeFace}
               makeVertex={this.props.makeVertex}
-              dotNode={this.props.dotNode}
+              faceNode={this.props.faceNode}
+              vertexNode={this.props.vertexNode}
               canvas={this.props.canvas}
             />
             : <Upload uploadImageHandler={this.props.uploadImageHandler} />

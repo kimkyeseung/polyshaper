@@ -1,13 +1,15 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { uploadImageHandler, makeVertex } from '../action';
+import { uploadImageHandler, makeFace, makeVertex } from '../action';
 import App from '../components/App';
 
 const mapStateToProps = state => {
   return {
-    uploadedImage: 'https://s-i.huffpost.com/gen/5498728/thumbs/o-KOREAN-POLICE-570.jpg',
-    // uploadedImage: state.uploadedImage,
-    dotNode: state.dotNode
+    uploadedImage: state.uploadedImage,
+    scale: state.scale,
+    vertexSnapGap: state.vertexSnapGap,
+    faceNode: state.faceNode,
+    vertexNode: state.vertexNode
   };
 };
 
@@ -17,8 +19,12 @@ const mapDispatchToProps = dispatch => {
       dispatch(uploadImageHandler(imageFile));
     },
 
-    makeVertex(x, y) {
-      dispatch(makeVertex(x, y));
+    makeFace(vertices, color) {
+      dispatch(makeFace(vertices, color));
+    },
+
+    makeVertex(vertex) {
+      dispatch(makeVertex(vertex));
     }
   };
 };

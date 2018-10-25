@@ -1,4 +1,4 @@
-import { IMAGE_UPLOAD, MAKE_FACE, MAKE_VERTEX } from '../constants/actionTypes';
+import { IMAGE_UPLOAD, MAKE_FACE, MAKE_VERTEX, EDIT_MODE_TOGGLE } from '../constants/actionTypes';
 
 let faceId = 0;
 
@@ -22,5 +22,12 @@ export const makeVertex = vertex => {
   return {
     type: MAKE_VERTEX,
     vertex
+  };
+};
+
+export const editMode = boolean => {
+  return {
+    type: EDIT_MODE_TOGGLE,
+    on: boolean
   };
 };

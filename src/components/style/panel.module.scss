@@ -1,0 +1,14 @@
+@import './app.module.scss';
+
+.panel {
+  position: relative;
+  text-align: right;
+  label {
+    color: white;
+  }
+
+  input[type="checkbox"] {
+    background: $main-color;
+  }
+  margin-bottom: 20px;
+}

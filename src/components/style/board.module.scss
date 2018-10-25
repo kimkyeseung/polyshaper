@@ -16,10 +16,23 @@
   position: relative;
 }
 
+.vertexLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+.guideLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 .colorCanvas {
   position: absolute;
   display: none;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 3;
 }

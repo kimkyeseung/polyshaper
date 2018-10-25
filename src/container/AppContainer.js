@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { uploadImageHandler, makeFace, makeVertex } from '../action';
+import { uploadImageHandler, makeFace, makeVertex, editMode } from '../action';
 import App from '../components/App';
 
 const mapStateToProps = state => {
@@ -9,7 +9,8 @@ const mapStateToProps = state => {
     scale: state.scale,
     vertexSnapGap: state.vertexSnapGap,
     faceNode: state.faceNode,
-    vertexNode: state.vertexNode
+    vertexNode: state.vertexNode,
+    polyEditMode: state.polyEditMode
   };
 };
 
@@ -25,6 +26,10 @@ const mapDispatchToProps = dispatch => {
 
     makeVertex(vertex) {
       dispatch(makeVertex(vertex));
+    },
+
+    editMode(boolean) {
+      dispatch(editMode(boolean));
     }
   };
 };

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import styles from './style/app.module.scss';
 import Upload from './Upload';
 import Board from './Board';
+import Panel from './Panel';
 
 class App extends Component {
 
@@ -13,14 +14,20 @@ class App extends Component {
         </header>
         {
           this.props.uploadedImage
-            ? <Board
-              uploadedImage={this.props.uploadedImage}
-              makeFace={this.props.makeFace}
-              makeVertex={this.props.makeVertex}
-              faceNode={this.props.faceNode}
-              vertexNode={this.props.vertexNode}
-              canvas={this.props.canvas}
-            />
+            ? 
+            <div>
+              <Panel editMode={this.props.editMode}/>
+              <Board
+                uploadedImage={this.props.uploadedImage}
+                makeFace={this.props.makeFace}
+                makeVertex={this.props.makeVertex}
+                faceNode={this.props.faceNode}
+                vertexNode={this.props.vertexNode}
+                canvas={this.props.canvas}
+                vertexSnapGap={this.props.vertexSnapGap}
+                polyEditMode={this.props.polyEditMode}
+              />
+            </div>
             : <Upload uploadImageHandler={this.props.uploadImageHandler} />
         }
       </div>

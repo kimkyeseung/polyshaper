@@ -1,13 +1,13 @@
 import { cloneDeep } from 'lodash';
-import { IMAGE_UPLOAD, MAKE_FACE, MAKE_VERTEX } from '../constants/actionTypes';
+import { IMAGE_UPLOAD, MAKE_FACE, MAKE_VERTEX, EDIT_MODE_TOGGLE } from '../constants/actionTypes';
 
 const defaultState = {
-  // uploadedImage: 'https://s-i.huffpost.com/gen/5498728/thumbs/o-KOREAN-POLICE-570.jpg',
   uploadedImage: null,
   scale: 1,
   vertexSnapGap: 10,
   vertexNode: [],
-  faceNode: []
+  faceNode: [],
+  polyEditMode: false
 };
 
 const reducer = (state = defaultState, action) => {
@@ -30,6 +30,11 @@ const reducer = (state = defaultState, action) => {
 
     case MAKE_VERTEX: {
       newState.vertexNode.push(action.vertex);
+      return newState;
+    }
+
+    case EDIT_MODE_TOGGLE: {
+      newState.polyEditMode = action.on;
       return newState;
     }
 

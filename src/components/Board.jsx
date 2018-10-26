@@ -13,8 +13,22 @@ class Board extends Component {
     this.uploadedImage = React.createRef();
     this.state = {
       vertexId: 0,
-      vertices: []
+      vertices: [],
+      isMousedown: false
     };
+    this.shortcut = this.shortcut.bind(this);
+  }
+
+  componentDidMount() {
+    document.body.addEventListener('keydown', this.shortcut);
+  }
+
+  componentWillUnmount() {
+    document.body.removeEventListener('keydown', this.shortcut);
+  }
+
+  shortcut(ev) {
+    console.log(ev.keyCode);
   }
 
   componentDidUpdate() {
@@ -26,7 +40,38 @@ class Board extends Component {
     }
   }
 
-  handleClick(ev) {
+  // handleClick(ev) {
+  //   if (this.props.polyEditMode) {
+  //     console.log('click on editmode');
+  //     return;
+  //   } else {
+  //     this.addVertex(ev);
+  //   }
+  // }
+
+  handleMouseDown(ev) {//this is only add mode now, distinguish add mode and edit mode
+    let x = ev.nativeEvent.offsetX;
+    let y = ev.nativeEvent.offsetY;
+    const context = this.guideLayer.current.getContext('2d');
+    context.beginPath();
+    context.clearRect(x-3, y-3, 6, 6);
+    context.arc(x, y, 3, 0, Math.PI * 2);
+    context.fillStyle = 'orange';
+    context.fill();
+
+    this.setState({
+      isMousedown: true
+    });
+  }
+
+  handleMouseUp(ev) {
+    this.addVertex(ev);
+    this.setState({
+      isMousedown: false
+    });
+  }
+
+  addVertex(ev) {
     let x = ev.nativeEvent.offsetX;
     let y = ev.nativeEvent.offsetY;
     const vertexNode = this.props.vertexNode.slice();
@@ -58,6 +103,17 @@ class Board extends Component {
     }
     this.makeVertex(x, y);
   }
+
+  // editVertex(ev) {//mouse down
+  //   let x = ev.nativeEvent.offsetX;
+  //   let y = ev.nativeEvent.offsetY;
+  //   const vertexNode = this.props.vertexNode.slice();
+  //   for (let i = 0; i < vertexNode.length; i++) {
+  //     if (vertexNode[i].x === x && vertexNode[i].y === y) {
+  //       console.log('finded');
+  //     }
+  //   }
+  // }
 
   handleMouseMove(ev) {
     let x = ev.nativeEvent.offsetX;
@@ -98,6 +154,22 @@ class Board extends Component {
         i = vertexNode.length;
       } else {
         context.clearRect(vertexNode[i].x-3, vertexNode[i].y-3, 6, 6);
+      }
+    }
+
+    if (this.state.isMousedown) {
+      const context = this.guideLayer.current.getContext('2d');
+      const vertices = this.state.vertices.slice();
+      context.beginPath();
+      context.clearRect(x-3, y-3, 6, 6);
+      context.arc(x, y, 3, 0, Math.PI * 2);
+      context.fillStyle = 'orange';
+      context.fill();
+      for (let i = 0; i < vertices.length; i++) {
+        context.clearRect(vertices[i].x-3, vertices[i].y-3, 6, 6);
+        context.arc(x, y, 3, 0, Math.PI * 2);
+        context.fillStyle = 'orange';
+        context.fill();
       }
     }
   }
@@ -152,7 +224,7 @@ class Board extends Component {
       let colorData = colorContext.getImageData(smallestX, smallestY, biggestX - smallestX, biggestY - smallestY);
       let i = -4;
       let count = 0;
-      const rgb = { r: 0, g: 0, b: 0 }
+      const rgb = { r: 0, g: 0, b: 0 };
       while ((i += 20) < colorData.data.length) {
         if (colorData.data[i + 3] > 200) {
           ++count;
@@ -166,7 +238,7 @@ class Board extends Component {
       rgb.b = ~~(rgb.b / count);
       this.props.makeFace(vertices, `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`);
       colorContext.restore();
-      context.clearRect(0, 0, this.colorCanvas.current.width, this.colorCanvas.current.height);// It make red spot clear
+      context.clearRect(0, 0, this.colorCanvas.current.width, this.colorCanvas.current.height);
       vertices.length = 0;
     }
     this.setState({
@@ -179,7 +251,7 @@ class Board extends Component {
     const context = this.canvas.current.getContext('2d');
     const vertexNode = this.props.vertexNode.slice();
     const faceNode = this.props.faceNode.slice();
-    faceNode.map(face => {
+    faceNode.forEach(face => {
       context.beginPath();
       context.moveTo(vertexNode[face.vertices[0]].x, vertexNode[face.vertices[0]].y);
       context.lineTo(vertexNode[face.vertices[1]].x, vertexNode[face.vertices[1]].y);
@@ -195,7 +267,7 @@ class Board extends Component {
 
     const context = this.vertexLayer.current.getContext('2d');
     const vertexNode = this.props.vertexNode.slice();
-    vertexNode.map(vertex => {
+    vertexNode.forEach(vertex => {
       context.beginPath();
       context.moveTo(vertex.x, vertex.y);
       context.arc(vertex.x, vertex.y, 3, 0, Math.PI * 2);
@@ -212,7 +284,13 @@ class Board extends Component {
 
   render() {
     return (
-      <div className={styles.board} onClick={this.handleClick.bind(this)} onMouseMove={this.handleMouseMove.bind(this)}>
+      <div
+        className={styles.board}
+        // onClick={this.handleClick.bind(this)}
+        onMouseDown={this.handleMouseDown.bind(this)}
+        onMouseMove={this.handleMouseMove.bind(this)}
+        onMouseUp={this.handleMouseUp.bind(this)}
+      >
         <img
           src={this.props.uploadedImage}
           ref={this.uploadedImage}

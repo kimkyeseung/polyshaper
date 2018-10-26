@@ -27,6 +27,7 @@
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 3;
 }
 
 .colorCanvas {
@@ -34,5 +35,4 @@
   display: none;
   top: 0;
   left: 0;
-  z-index: 3;
 }

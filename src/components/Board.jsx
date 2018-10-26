@@ -31,6 +31,24 @@ class Board extends Component {
     let y = ev.nativeEvent.offsetY;
     const vertexNode = this.props.vertexNode.slice();
     const vertexSnapGap = this.props.vertexSnapGap;
+
+    if (x < vertexSnapGap || x > this.guideLayer.current.width - vertexSnapGap || y < vertexSnapGap || y > this.guideLayer.current.height - vertexSnapGap) {
+      if (x < vertexSnapGap) {
+        x = 0;
+      }
+      if (y < vertexSnapGap) {
+        y = 0;
+      }
+      if (x > this.guideLayer.current.width - vertexSnapGap) {
+        x = this.guideLayer.current.width;
+      }
+      if (y > this.guideLayer.current.height - vertexSnapGap) {
+        y = this.guideLayer.current.height;
+      }
+    } else {
+      x = ev.nativeEvent.offsetX;
+      y = ev.nativeEvent.offsetY;
+    }
     for (let i = 0; i < vertexNode.length; i++) {
       if ((Math.abs(vertexNode[i].x - x) < vertexSnapGap) && (Math.abs(vertexNode[i].y - y) < vertexSnapGap)) {
         x = vertexNode[i].x;
@@ -47,20 +65,33 @@ class Board extends Component {
     const vertexNode = this.props.vertexNode.slice();
     const vertexSnapGap = this.props.vertexSnapGap;
     const context = this.guideLayer.current.getContext('2d');
-    if (x < vertexSnapGap) {
-      context.clearRect(0, y-3, 6, 6);//test
+    if (x < vertexSnapGap || x > this.guideLayer.current.width - vertexSnapGap || y < vertexSnapGap || y > this.guideLayer.current.height - vertexSnapGap) {
+      if (x < vertexSnapGap) {
+        x = 0;
+      }
+      if (y < vertexSnapGap) {
+        y = 0;
+      }
+      if (x > this.guideLayer.current.width - vertexSnapGap) {
+        x = this.guideLayer.current.width;
+      }
+      if (y > this.guideLayer.current.height - vertexSnapGap) {
+        y = this.guideLayer.current.height;
+      }
       context.beginPath();
-      context.moveTo(0, y);
-      context.arc(0, y, 3, 0, Math.PI * 2);
+      context.clearRect(0, 0, this.guideLayer.current.width, this.guideLayer.current.height);
+      context.arc(x, y, 3, 0, Math.PI * 2);
       context.fillStyle = 'orange';
       context.fill();
     } else {
-      context.clearRect(0, y-3, 6, 6);//test
+      let x = ev.nativeEvent.offsetX;
+      let y = ev.nativeEvent.offsetY;
+      context.clearRect(0, 0, this.guideLayer.current.width, this.guideLayer.current.height);
     }
     for (let i = 0; i < vertexNode.length; i++) {
       if ((Math.abs(vertexNode[i].x - x) < vertexSnapGap) && (Math.abs(vertexNode[i].y - y) < vertexSnapGap)) {
         context.beginPath();
-        context.moveTo(vertexNode[i].x, vertexNode[i].y);
+        context.clearRect(0, 0, this.guideLayer.current.width, this.guideLayer.current.height);
         context.arc(vertexNode[i].x, vertexNode[i].y, 3, 0, Math.PI * 2);
         context.fillStyle = 'orange';
         context.fill();
@@ -77,7 +108,6 @@ class Board extends Component {
     }
     const context = this.canvas.current.getContext('2d');
     context.beginPath();
-    context.moveTo(x, y);
     context.arc(x, y, 3, 0, Math.PI * 2);
     context.fillStyle = 'red';
     context.fill();

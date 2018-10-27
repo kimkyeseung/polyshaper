@@ -11,6 +11,7 @@ class Board extends Component {
     this.editModeVertexLayer = React.createRef();
     this.snapGuideLayer = React.createRef();
     this.uploadedImage = React.createRef();
+    this.backgroundLayer = React.createRef();
     this.state = {
       vertexId: 0,
       vertices: [],
@@ -34,9 +35,11 @@ class Board extends Component {
   componentDidUpdate() {
     this.drawPoly();
     if (this.props.polyEditMode) {
-      this.editModeVertexLayer.current.width = this.uploadedImage.current.width;
-      this.editModeVertexLayer.current.height = this.uploadedImage.current.height;
       this.drawVertex()
+    }
+    if (this.props.backgroundVertexNode.length) {
+      const backgroundVertexNode = this.props.backgroundVertexNode.slice();
+      this.drawBackground(backgroundVertexNode);
     }
   }
 
@@ -45,15 +48,15 @@ class Board extends Component {
     let y = ev.nativeEvent.offsetY;
     const context = this.snapGuideLayer.current.getContext('2d');//
     if (this.props.polyEditMode) {
-      
+
     } else {
       context.beginPath();
-      context.clearRect(x-3, y-3, 6, 6);
+      context.clearRect(x - 3, y - 3, 6, 6);
       context.arc(x, y, 3, 0, Math.PI * 2);
       context.fillStyle = 'orange';
       context.fill();
     }
-    
+
     this.setState({
       isMousedown: true
     });
@@ -61,7 +64,7 @@ class Board extends Component {
 
   handleMouseUp(ev) {
     if (this.props.polyEditMode) {
-      
+
     } else {
       this.addVertex(ev);
     }
@@ -139,7 +142,7 @@ class Board extends Component {
         context.fill();
         i = vertexNode.length;
       } else {
-        context.clearRect(vertexNode[i].x-3, vertexNode[i].y-3, 6, 6);
+        context.clearRect(vertexNode[i].x - 3, vertexNode[i].y - 3, 6, 6);
       }
     }
 
@@ -151,17 +154,17 @@ class Board extends Component {
             vertexNode[i].y = y;
             this.drawPoly();
           }
-        } 
+        }
       } else {
         const context = this.canvas.current.getContext('2d');//fixed
         const vertices = this.state.vertices.slice();
         context.beginPath();
-        context.clearRect(x-3, y-3, 6, 6);
+        context.clearRect(x - 3, y - 3, 6, 6);
         context.arc(x, y, 3, 0, Math.PI * 2);
         context.fillStyle = 'orange';
         context.fill();
         for (let i = 0; i < vertices.length; i++) {
-          context.clearRect(vertices[i].x-3, vertices[i].y-3, 6, 6);
+          context.clearRect(vertices[i].x - 3, vertices[i].y - 3, 6, 6);
           context.arc(x, y, 3, 0, Math.PI * 2);
           context.fillStyle = 'orange';
           context.fill();
@@ -202,38 +205,8 @@ class Board extends Component {
     this.props.makeVertex(newVertex);
     let vertexId = this.state.vertexId + 1;
     if (vertices.length === 3) {
-      const colorContext = this.colorCanvas.current.getContext('2d');
-      colorContext.save();
-      colorContext.beginPath();
-      colorContext.moveTo(vertices[0].x, vertices[0].y);
-      colorContext.lineTo(vertices[1].x, vertices[1].y);
-      colorContext.lineTo(vertices[2].x, vertices[2].y);
-      colorContext.closePath();
-      colorContext.clip();
-      let image = document.createElement('img');
-      image.src = this.props.uploadedImage;
-      colorContext.drawImage(image, 0, 0);
-      let biggestX = Math.max(vertices[0].x, vertices[1].x, vertices[2].x);
-      let biggestY = Math.max(vertices[0].y, vertices[1].y, vertices[2].y);
-      let smallestX = Math.min(vertices[0].x, vertices[1].x, vertices[2].x);
-      let smallestY = Math.min(vertices[0].y, vertices[1].y, vertices[2].y);
-      let colorData = colorContext.getImageData(smallestX, smallestY, biggestX - smallestX, biggestY - smallestY);
-      let i = -4;
-      let count = 0;
-      const rgb = { r: 0, g: 0, b: 0 };
-      while ((i += 20) < colorData.data.length) {
-        if (colorData.data[i + 3] > 200) {
-          ++count;
-          rgb.r += colorData.data[i];
-          rgb.g += colorData.data[i + 1];
-          rgb.b += colorData.data[i + 2];
-        }
-      }
-      rgb.r = ~~(rgb.r / count);
-      rgb.g = ~~(rgb.g / count);
-      rgb.b = ~~(rgb.b / count);
-      this.props.makeFace(vertices, `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`);
-      colorContext.restore();
+      const colorData = this.getColorAverage(vertices[0].x, vertices[0].y, vertices[1].x, vertices[1].y, vertices[2].x, vertices[2].y);
+      this.props.makeFace(vertices, `rgb(${colorData.r}, ${colorData.g}, ${colorData.b})`);
       context.clearRect(0, 0, this.colorCanvas.current.width, this.colorCanvas.current.height);
       vertices.length = 0;
     }
@@ -241,6 +214,40 @@ class Board extends Component {
       vertices,
       vertexId
     });
+  }
+
+  getColorAverage(x1, y1, x2, y2, x3, y3) {//return object : {r: 00, g:00, b: 00};
+    const colorContext = this.colorCanvas.current.getContext('2d');
+    colorContext.save();
+    colorContext.beginPath();
+    colorContext.moveTo(x1, y1);
+    colorContext.lineTo(x2, y2);
+    colorContext.lineTo(x3, y3);
+    colorContext.closePath();
+    colorContext.clip();
+    let image = document.createElement('img');
+    image.src = this.props.uploadedImage;
+    colorContext.drawImage(image, 0, 0);
+    let biggestX = Math.max(x1, x2, x3);
+    let biggestY = Math.max(y1, y2, y3);
+    let smallestX = Math.min(x1, x2, x3);
+    let smallestY = Math.min(y1, y2, y3);
+    let colorData = colorContext.getImageData(smallestX, smallestY, biggestX - smallestX, biggestY - smallestY);
+    let count = 0;
+    const rgb = { r: 0, g: 0, b: 0 };
+    for (let i = -4; i < colorData.data.length; i += 20) {
+      if (colorData.data[i + 3] > 200) {
+        ++count;
+        rgb.r += colorData.data[i];
+        rgb.g += colorData.data[i + 1];
+        rgb.b += colorData.data[i + 2];
+      }
+    }
+    rgb.r = ~~(rgb.r / count);
+    rgb.g = ~~(rgb.g / count);
+    rgb.b = ~~(rgb.b / count);
+    colorContext.restore();
+    return rgb;
   }
 
   drawPoly() {//draw colored poly when component updated
@@ -271,9 +278,54 @@ class Board extends Component {
     });
   }
 
+  drawBackground(vertices) {
+    const context = this.backgroundLayer.current.getContext('2d');
+    let maxCols = this.props.backgroundMaxCols;
+    let colorData;
+    for (let i = 0; i < vertices.length; i++) {
+      if (vertices[i].row % 2 === 0 && vertices[i + maxCols + 1] && vertices[i].col < maxCols - 1) {
+        context.beginPath();
+        context.moveTo(vertices[i].x, vertices[i].y);
+        context.lineTo(vertices[i + maxCols].x, vertices[i + maxCols].y);
+        context.lineTo(vertices[i + maxCols + 1].x, vertices[i + maxCols + 1].y);
+        context.closePath();
+        colorData = this.getColorAverage(vertices[i].x, vertices[i].y, vertices[i + maxCols].x, vertices[i + maxCols].y, vertices[i + maxCols + 1].x, vertices[i + maxCols + 1].y);
+        context.fillStyle = `rgb(${colorData.r}, ${colorData.g}, ${colorData.b})`
+        context.fill();
+        
+        context.beginPath();
+        context.moveTo(vertices[i].x, vertices[i].y);
+        context.lineTo(vertices[i + 1].x, vertices[i + 1].y);
+        context.lineTo(vertices[i + maxCols + 1].x, vertices[i + maxCols + 1].y);
+        context.closePath();
+        colorData = this.getColorAverage(vertices[i].x, vertices[i].y, vertices[i + 1].x, vertices[i + 1].y, vertices[i + maxCols + 1].x, vertices[i + maxCols + 1].y);
+        context.fillStyle = `rgb(${colorData.r}, ${colorData.g}, ${colorData.b})`
+        context.fill();
+
+      } else if (vertices[i - 1] && vertices[i + maxCols] && vertices[i].col > 0) {
+        context.beginPath();
+        context.moveTo(vertices[i].x, vertices[i].y);
+        context.lineTo(vertices[i - 1].x, vertices[i - 1].y);
+        context.lineTo(vertices[i + maxCols - 1].x, vertices[i + maxCols - 1].y);
+        context.closePath();
+        colorData = this.getColorAverage(vertices[i].x, vertices[i].y, vertices[i - 1].x, vertices[i - 1].y, vertices[i + maxCols - 1].x, vertices[i + maxCols - 1].y);
+        context.fillStyle = `rgb(${colorData.r}, ${colorData.g}, ${colorData.b})`
+        context.fill();
+
+        context.beginPath();
+        context.moveTo(vertices[i].x, vertices[i].y);
+        context.lineTo(vertices[i + maxCols].x, vertices[i + maxCols].y);
+        context.lineTo(vertices[i + maxCols - 1].x, vertices[i + maxCols - 1].y);
+        context.closePath();
+        colorData = this.getColorAverage(vertices[i].x, vertices[i].y, vertices[i + maxCols].x, vertices[i + maxCols].y, vertices[i + maxCols - 1].x, vertices[i + maxCols - 1].y);
+        context.fillStyle = `rgb(${colorData.r}, ${colorData.g}, ${colorData.b})`
+        context.fill();
+      }
+    }
+  }
+
   imageLoad(ev) {
-    this.snapGuideLayer.current.width = this.colorCanvas.current.width = this.canvas.current.width = this.uploadedImage.current.width;
-    this.snapGuideLayer.current.height = this.colorCanvas.current.height = this.canvas.current.height = this.uploadedImage.current.height;
+    this.props.setUpCanvasSize(this.uploadedImage.current.width, this.uploadedImage.current.height);
   }
 
   render() {
@@ -295,28 +347,44 @@ class Board extends Component {
 
         <canvas //this is only for snap
           className={styles.snapGuideLayer}
+          width={this.props.canvasWidth}
+          height={this.props.canvasHeight}
           ref={this.snapGuideLayer}
         />
 
         <canvas
           className={styles.colorCanvas}
+          width={this.props.canvasWidth}
+          height={this.props.canvasHeight}
           ref={this.colorCanvas}
         />
 
         {
           this.props.polyEditMode
-          ? <canvas
-            className={styles.editModeVertexLayer}
-            ref={this.editModeVertexLayer}
-            onLoad={this.drawVertex.bind(this)}
-          />
-          : null
+            ? <canvas
+              className={styles.editModeVertexLayer}
+              width={this.props.canvasWidth}
+              height={this.props.canvasHeight}
+              ref={this.editModeVertexLayer}
+              onLoad={this.drawVertex.bind(this)}
+            />
+            : null
         }
-        
+
         <canvas
           className={styles.canvas}
+          width={this.props.canvasWidth}
+          height={this.props.canvasHeight}
           ref={this.canvas}
         />
+
+        <canvas
+          className={styles.backgroundLayer}
+          width={this.props.canvasWidth}
+          height={this.props.canvasHeight}
+          ref={this.backgroundLayer}
+        />
+
       </div>
     );
   }

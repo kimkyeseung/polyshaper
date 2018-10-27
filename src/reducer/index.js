@@ -1,5 +1,12 @@
 import { cloneDeep } from 'lodash';
-import { IMAGE_UPLOAD, MAKE_FACE, MAKE_VERTEX, EDIT_MODE_TOGGLE } from '../constants/actionTypes';
+import {
+  IMAGE_UPLOAD,
+  SET_UP_CANVAS_SIZE,
+  MAKE_FACE,
+  MAKE_VERTEX,
+  EDIT_MODE_TOGGLE,
+  AUTO_POPULATE
+} from '../constants/actionTypes';
 
 const defaultState = {
   uploadedImage: null,
@@ -7,7 +14,15 @@ const defaultState = {
   vertexSnapGap: 10,
   vertexNode: [],
   faceNode: [],
-  polyEditMode: false
+  polyEditMode: false,
+  canvasWidth: 0,
+  canvasHeight: 0,
+
+  backgroundVertexNode: [],
+  backgroundVariance: 0.4,
+  backgroundCellSize: 100,
+  backgroundMaxCols: 0,
+  backgroundMaxRows: 0
 };
 
 const reducer = (state = defaultState, action) => {
@@ -28,6 +43,12 @@ const reducer = (state = defaultState, action) => {
       return newState;
     }
 
+    case SET_UP_CANVAS_SIZE: {
+      newState.canvasWidth = action.width;
+      newState.canvasHeight = action.height;
+      return newState;
+    }
+
     case MAKE_VERTEX: {
       newState.vertexNode.push(action.vertex);
       return newState;
@@ -35,6 +56,11 @@ const reducer = (state = defaultState, action) => {
 
     case EDIT_MODE_TOGGLE: {
       newState.polyEditMode = action.on;
+      return newState;
+    }
+
+    case AUTO_POPULATE: {
+      newState.backgroundVertexNode = action.backgroundVertexNode;
       return newState;
     }
 

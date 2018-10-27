@@ -30,6 +30,12 @@
   z-index: 3;
 }
 
+.backgroundLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 .colorCanvas {
   position: absolute;
   display: none;

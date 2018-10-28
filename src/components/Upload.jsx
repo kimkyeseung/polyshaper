@@ -35,8 +35,8 @@ class Upload extends Component {
     if (fileExtension === "gif" || fileExtension === "png" || fileExtension === "bmp" || fileExtension === "jpeg" || fileExtension === "jpg") {
       if (uploadedImageFile && ev.target.files[0]) {
         let fileSize = ev.target.files[0].size;
-        if (fileSize > 1048576) {
-          alert('image file size must under the 1MB');
+        if (fileSize > 10485760) {
+          alert('image file size must under the 10MB');
           return;
         }
       }

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { debounce } from 'lodash';
 import styles from './style/board.module.scss';
 
 
@@ -35,7 +34,7 @@ class Board extends Component {
   componentDidUpdate() {
     this.drawPoly();
     if (this.props.polyEditMode) {
-      this.drawVertex()
+      this.drawVertex();
     }
     if (this.props.backgroundVertexNode.length) {
       const backgroundVertexNode = this.props.backgroundVertexNode.slice();

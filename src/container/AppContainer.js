@@ -4,7 +4,6 @@ import { uploadImageHandler, setUpCanvasSize, makeFace, makeVertex, editMode, au
 import App from '../components/App';
 
 const mapStateToProps = state => {
-  console.log('mstp');
   return {
     uploadedImage: state.uploadedImage,
     scale: state.scale,
@@ -17,8 +16,8 @@ const mapStateToProps = state => {
     backgroundVertexNode: state.backgroundVertexNode,
     backgroundVariance: state.backgroundVariance,
     backgroundCellSize: state.backgroundCellSize,
-    backgroundMaxCols: Math.ceil(((state.canvasWidth + state.backgroundCellSize * 2) / state.backgroundCellSize) + 2),
-    backgroundMaxRows: Math.ceil((state.canvasHeight + state.backgroundCellSize * 2) / (state.backgroundCellSize * 0.865))
+    backgroundMaxCols: state.backgroundMaxCols,
+    backgroundMaxRows: state.backgroundMaxRows
   };
 };
 
@@ -44,12 +43,13 @@ const mapDispatchToProps = dispatch => {
       dispatch(editMode(boolean));
     },
 
-    autoPopulate(backgroundVertexNode) {
-      dispatch(autoPopulate(backgroundVertexNode));
+    autoPopulate() {
+      dispatch(autoPopulate());
     },
 
     setBackgroundPoly(data, category) {
       dispatch(setBackgroundPoly(data, category));
+      dispatch(autoPopulate());
     }
   };
 };

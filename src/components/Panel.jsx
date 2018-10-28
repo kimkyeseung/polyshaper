@@ -5,10 +5,24 @@ import styles from './style/panel.module.scss';
 class Panel extends Component {
   constructor(props) {
     super(props);
+    this.setWidth = React.createRef();
     this.handleAutoPopulateValueChange = debounce(this.handleAutoPopulateValueChange.bind(this), 500, {
       leading: false,
       trailing: true
     });
+    this.handleSizeChange = debounce(this.handleSizeChange.bind(this), 500);
+  }
+
+  componentDidUpdate() {
+    this.setWidth.current.value = this.props.canvasWidth;
+  }
+
+  handleSizeChange(size) {
+    console.log(size);
+  }
+
+  handlieImageDownloadClick() {
+    console.log('download');
   }
 
   onEditmode(ev) {
@@ -24,34 +38,7 @@ class Panel extends Component {
   }
 
   handleAutoPopulateButtonClick() {
-    const backgroundVertexNode = [];
-    let row = 0;
-    let col = 0;
-    let maxCols = this.props.backgroundMaxCols;
-    let maxRows = this.props.backgroundMaxRows;
-    let amount = maxCols * maxRows;
-    for (let i = 0; i < amount; i++) {
-      let vertex = {};
-      if (row % 2 === 0) {
-        vertex.x = (col * this.props.backgroundCellSize) - this.props.backgroundCellSize;
-      } else {
-        vertex.x = (col * this.props.backgroundCellSize) - this.props.backgroundCellSize - this.props.backgroundCellSize / 2;
-      }
-      vertex.x = vertex.x + (Math.random() - 0.5) * this.props.backgroundVariance * this.props.backgroundCellSize * 2;
-      console.log(this.props.backgroundVariance);
-      vertex.y = (row * this.props.backgroundCellSize * 0.865) - this.props.backgroundCellSize;
-      vertex.y = vertex.y + (Math.random() - 0.5) * this.props.backgroundVariance * this.props.backgroundCellSize * 2;
-      // console.log(vertex.y);
-      vertex.col = col;
-      vertex.row = row;
-      backgroundVertexNode.push(vertex);
-      col++;
-      if ((i + 1) % maxCols === 0) {
-        row++;
-        col = 0;
-      }
-    }
-    this.props.autoPopulate(backgroundVertexNode);
+    this.props.autoPopulate();
   }
 
   render() {
@@ -67,6 +54,15 @@ class Panel extends Component {
           />
         </fieldset>
 
+        <fieldset className={styles.size}>
+          <legend>Image Size Setting</legend>
+          <label htmlFor="">Width : </label>
+          <input type="text" name="setWidth" id="setWidth" ref={this.setWidth} onChange={(ev) => {
+            this.handleSizeChange(ev.target.value);
+          }}/>
+          <p>height : {this.props.canvasHeight}</p>
+        </fieldset>
+
         <fieldset>
           <legend>Auto Populate Settings</legend>
           <label htmlFor="variance">Variance</label>
@@ -78,7 +74,9 @@ class Panel extends Component {
             step="0.01"
             min="0"
             max="1"
-            onChange={(ev) => this.handleAutoPopulateValueChange(ev.target.value, 'variance')}
+            onChange={(ev) => {
+              this.handleAutoPopulateValueChange(ev.target.value, 'variance');
+            }}
           />
 
           <label htmlFor="cellsize">Cellsize</label>
@@ -86,15 +84,19 @@ class Panel extends Component {
             type="range"
             id="cellsize"
             name="cellsize"
-            min="24"
+            min="6"
             max="200"
             defaultValue={this.props.backgroundCellSize}
             step="2"
-            onChange={(ev) => this.handleAutoPopulateValueChange(ev.target.value, 'cellsize')}
+            onChange={(ev) => {
+              this.handleAutoPopulateValueChange(ev.target.value, 'cellsize');
+            }}
           />
           <button onClick={this.handleAutoPopulateButtonClick.bind(this)}>Auto Populate</button>
 
         </fieldset>
+
+        <button>Download Image</button>
       </div>
     );
   }

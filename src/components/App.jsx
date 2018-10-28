@@ -9,6 +9,11 @@ class App extends Component {
     this.props.uploadImageHandler(null);
   }
 
+  imageDownload() {
+    // var dataURL = canvas.toDataURL();
+    // saveBtn.href = dataURL;
+  }
+
   render() {
     return (
       <div className={styles.App}>
@@ -46,7 +51,6 @@ class App extends Component {
                   backgroundMaxRows={this.props.backgroundMaxRows}
                   backgroundCellSize={this.props.backgroundCellSize}
                   backgroundVariance={this.props.backgroundVariance}
-                  canvas={this.props.canvas}
                   vertexSnapGap={this.props.vertexSnapGap}
                   polyEditMode={this.props.polyEditMode}
                   canvasWidth={this.props.canvasWidth}

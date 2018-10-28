@@ -4,3 +4,4 @@ export const MAKE_VERTEX = 'MAKE_VERTEX';
 export const MAKE_FACE = 'MAKE_FACE';
 export const EDIT_MODE_TOGGLE = 'EDIT_MODE_TOGGLE';
 export const AUTO_POPULATE = 'AUTO_POPULATE';
+export const SET_BACKGROUND_POLY = 'SET_BACKGROUND_POLY';

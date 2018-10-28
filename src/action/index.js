@@ -3,7 +3,8 @@ import {
   SET_UP_CANVAS_SIZE,
   MAKE_FACE, MAKE_VERTEX,
   EDIT_MODE_TOGGLE,
-  AUTO_POPULATE
+  AUTO_POPULATE,
+  SET_BACKGROUND_POLY
 } from '../constants/actionTypes';
 
 let faceId = 0;
@@ -52,3 +53,11 @@ export const autoPopulate = backgroundVertexNode => {
     backgroundVertexNode
   };
 };
+
+export const setBackgroundPoly = (data, category) => {
+  return {
+    type: SET_BACKGROUND_POLY,
+    data,
+    category
+  }
+}

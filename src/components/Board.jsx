@@ -232,7 +232,7 @@ class Board extends Component {
     let biggestY = Math.max(y1, y2, y3);
     let smallestX = Math.min(x1, x2, x3);
     let smallestY = Math.min(y1, y2, y3);
-    let colorData = colorContext.getImageData(smallestX, smallestY, biggestX - smallestX, biggestY - smallestY);
+    let colorData = colorContext.getImageData(smallestX, smallestY, Math.ceil(biggestX - smallestX) || 1, Math.ceil(biggestY - smallestY) || 1);
     let count = 0;
     const rgb = { r: 0, g: 0, b: 0 };
     for (let i = -4; i < colorData.data.length; i += 20) {
@@ -292,7 +292,7 @@ class Board extends Component {
         colorData = this.getColorAverage(vertices[i].x, vertices[i].y, vertices[i + maxCols].x, vertices[i + maxCols].y, vertices[i + maxCols + 1].x, vertices[i + maxCols + 1].y);
         context.fillStyle = `rgb(${colorData.r}, ${colorData.g}, ${colorData.b})`
         context.fill();
-        
+
         context.beginPath();
         context.moveTo(vertices[i].x, vertices[i].y);
         context.lineTo(vertices[i + 1].x, vertices[i + 1].y);
@@ -332,7 +332,6 @@ class Board extends Component {
     return (
       <div
         className={styles.board}
-        // onClick={this.handleClick.bind(this)}
         onMouseDown={this.handleMouseDown.bind(this)}
         onMouseMove={this.handleMouseMove.bind(this)}
         onMouseUp={this.handleMouseUp.bind(this)}

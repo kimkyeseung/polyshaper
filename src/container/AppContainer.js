@@ -1,9 +1,10 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { uploadImageHandler, setUpCanvasSize, makeFace, makeVertex, editMode, autoPopulate } from '../action';
+import { uploadImageHandler, setUpCanvasSize, makeFace, makeVertex, editMode, autoPopulate, setBackgroundPoly } from '../action';
 import App from '../components/App';
 
 const mapStateToProps = state => {
+  console.log('mstp');
   return {
     uploadedImage: state.uploadedImage,
     scale: state.scale,
@@ -45,6 +46,10 @@ const mapDispatchToProps = dispatch => {
 
     autoPopulate(backgroundVertexNode) {
       dispatch(autoPopulate(backgroundVertexNode));
+    },
+
+    setBackgroundPoly(data, category) {
+      dispatch(setBackgroundPoly(data, category));
     }
   };
 };

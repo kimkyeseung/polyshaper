@@ -5,7 +5,8 @@ import {
   MAKE_FACE,
   MAKE_VERTEX,
   EDIT_MODE_TOGGLE,
-  AUTO_POPULATE
+  AUTO_POPULATE,
+  SET_BACKGROUND_POLY
 } from '../constants/actionTypes';
 
 const defaultState = {
@@ -20,7 +21,7 @@ const defaultState = {
 
   backgroundVertexNode: [],
   backgroundVariance: 0.4,
-  backgroundCellSize: 100,
+  backgroundCellSize: 60,
   backgroundMaxCols: 0,
   backgroundMaxRows: 0
 };
@@ -61,6 +62,17 @@ const reducer = (state = defaultState, action) => {
 
     case AUTO_POPULATE: {
       newState.backgroundVertexNode = action.backgroundVertexNode;
+      return newState;
+    }
+
+    case SET_BACKGROUND_POLY: {
+      if (action.category === 'variance') {
+        console.log('variance');
+        newState.backgroundVariance = action.data;
+      } else if (action.category === 'cellsize') {
+        console.log('backgroundCellSize');
+        newState.backgroundCellSize = action.data;
+      }
       return newState;
     }
 

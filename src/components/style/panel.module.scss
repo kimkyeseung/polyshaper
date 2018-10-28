@@ -1,14 +1,32 @@
 @import './app.module.scss';
 
 .panel {
-  position: relative;
-  text-align: right;
-  label {
-    color: white;
+  padding: 10px 6px;
+
+  legend {
+    color: $main-color;
+    padding: 3px 6px;
+  }
+  
+  button {
+    margin: 10px auto;
   }
 
-  input[type="checkbox"] {
+  label {
+    color: white;
+    line-height: 1.5em;
+    padding: 3px 6px;
+  }
+
+  .editmode {
+    margin-bottom: 10px;
+    border: 0;
+  }
+
+  input[type=checkbox] {
     background: $main-color;
   }
   margin-bottom: 20px;
+
+  
 }

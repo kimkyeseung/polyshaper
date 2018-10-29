@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { uploadImageHandler, setUpCanvasSize, makeFace, makeVertex, editMode, autoPopulate, setBackgroundPoly } from '../action';
+import { uploadImageHandler, setUpCanvasSize, makeFace, makeVertex, editMode, autoPopulate, setBackgroundPoly, downloadFlattenImage } from '../action';
 import App from '../components/App';
 
 const mapStateToProps = state => {
@@ -17,7 +17,8 @@ const mapStateToProps = state => {
     backgroundVariance: state.backgroundVariance,
     backgroundCellSize: state.backgroundCellSize,
     backgroundMaxCols: state.backgroundMaxCols,
-    backgroundMaxRows: state.backgroundMaxRows
+    backgroundMaxRows: state.backgroundMaxRows,
+    flattenImage: state.flattenImage
   };
 };
 
@@ -50,6 +51,10 @@ const mapDispatchToProps = dispatch => {
     setBackgroundPoly(data, category) {
       dispatch(setBackgroundPoly(data, category));
       dispatch(autoPopulate());
+    },
+
+    downloadFlattenImage(request) {
+      dispatch(downloadFlattenImage(request));
     }
   };
 };

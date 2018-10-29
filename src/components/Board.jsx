@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import styles from './style/board.module.scss';
 
-
 class Board extends Component {
   constructor(props) {
     super(props);
@@ -11,6 +10,7 @@ class Board extends Component {
     this.snapGuideLayer = React.createRef();
     this.uploadedImage = React.createRef();
     this.backgroundLayer = React.createRef();
+    this.flatten = React.createRef();
     this.state = {
       vertexId: 0,
       vertices: [],
@@ -39,6 +39,9 @@ class Board extends Component {
     if (this.props.backgroundVertexNode.length) {
       const backgroundVertexNode = this.props.backgroundVertexNode.slice();
       this.drawBackground(backgroundVertexNode);
+    }
+    if (this.props.flattenImage) {
+      this.flattenImage();
     }
   }
 
@@ -327,6 +330,19 @@ class Board extends Component {
     this.props.setUpCanvasSize(this.uploadedImage.current.width, this.uploadedImage.current.height);
   }
 
+  flattenImage() {
+    const context = this.flatten.current.getContext('2d');
+    context.drawImage(this.backgroundLayer.current, 0 ,0, this.props.canvasWidth, this.props.canvasHeight);
+    context.drawImage(this.canvas.current, 0 ,0, this.props.canvasWidth, this.props.canvasHeight);
+
+    let dataURL = this.flatten.current.toDataURL("image/png");
+    this.props.downloadFlattenImage(false);
+    let link = document.createElement('a');
+    link.download = 'yourPoly.png';
+    link.href = dataURL;
+    link.click();
+  }
+
   render() {
     return (
       <div
@@ -383,6 +399,12 @@ class Board extends Component {
           ref={this.backgroundLayer}
         />
 
+        <canvas
+          className={styles.flatten}
+          width={this.props.canvasWidth}
+          height={this.props.canvasHeight}
+          ref={this.flatten}
+        />
       </div>
     );
   }

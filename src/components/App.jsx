@@ -9,11 +9,6 @@ class App extends Component {
     this.props.uploadImageHandler(null);
   }
 
-  imageDownload() {
-    // var dataURL = canvas.toDataURL();
-    // saveBtn.href = dataURL;
-  }
-
   render() {
     return (
       <div className={styles.App}>
@@ -36,6 +31,7 @@ class App extends Component {
                   backgroundVariance={this.props.backgroundVariance}
                   backgroundCellSize={this.props.backgroundCellSize}
                   setBackgroundPoly={this.props.setBackgroundPoly}
+                  downloadFlattenImage={this.props.downloadFlattenImage}
                 />
               </section>
               <section className={styles.boardSection}>
@@ -55,6 +51,8 @@ class App extends Component {
                   polyEditMode={this.props.polyEditMode}
                   canvasWidth={this.props.canvasWidth}
                   canvasHeight={this.props.canvasHeight}
+                  flattenImage={this.props.flattenImage}
+                  downloadFlattenImage={this.props.downloadFlattenImage}
                 />
                 <button onClick={this.resetPicture.bind(this)} style={{display: 'block', margin: '40px auto'}}>Reset Picture</button>
               </section>

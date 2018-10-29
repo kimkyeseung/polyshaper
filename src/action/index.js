@@ -4,7 +4,8 @@ import {
   MAKE_FACE, MAKE_VERTEX,
   EDIT_MODE_TOGGLE,
   AUTO_POPULATE,
-  SET_BACKGROUND_POLY
+  SET_BACKGROUND_POLY,
+  DOWNLOAD_FLATTEN_IMG
 } from '../constants/actionTypes';
 
 let faceId = 0;
@@ -59,5 +60,12 @@ export const setBackgroundPoly = (data, category) => {
     type: SET_BACKGROUND_POLY,
     data,
     category
+  };
+};
+
+export const downloadFlattenImage = request => {
+  return {
+    type: DOWNLOAD_FLATTEN_IMG,
+    request
   }
-}
+};

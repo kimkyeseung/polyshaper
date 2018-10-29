@@ -22,7 +22,7 @@ class Panel extends Component {
   }
 
   handlieImageDownloadClick() {
-    console.log('download');
+    this.props.downloadFlattenImage(true);
   }
 
   onEditmode(ev) {
@@ -96,7 +96,7 @@ class Panel extends Component {
 
         </fieldset>
 
-        <button>Download Image</button>
+        <button onClick={this.handlieImageDownloadClick.bind(this)}>Download Image</button>
       </div>
     );
   }

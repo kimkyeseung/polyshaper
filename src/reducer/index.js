@@ -6,7 +6,8 @@ import {
   MAKE_VERTEX,
   EDIT_MODE_TOGGLE,
   AUTO_POPULATE,
-  SET_BACKGROUND_POLY
+  SET_BACKGROUND_POLY,
+  DOWNLOAD_FLATTEN_IMG
 } from '../constants/actionTypes';
 
 const defaultState = {
@@ -23,7 +24,8 @@ const defaultState = {
   backgroundVariance: 0.4,
   backgroundCellSize: 60,
   backgroundMaxCols: 0,
-  backgroundMaxRows: 0
+  backgroundMaxRows: 0,
+  flattenImage: false
 };
 
 const reducer = (state = defaultState, action) => {
@@ -103,7 +105,15 @@ const reducer = (state = defaultState, action) => {
         newState.backgroundMaxCols = Math.ceil(((newState.canvasWidth + newState.backgroundCellSize * 2) / newState.backgroundCellSize) + 2);
         newState.backgroundMaxRows = Math.ceil((newState.canvasHeight + newState.backgroundCellSize * 2) / (newState.backgroundCellSize * 0.865));
       }
+      return newState;
+    }
 
+    case DOWNLOAD_FLATTEN_IMG: {
+      if (action.request) {
+        newState.flattenImage = true;
+      } else {
+        newState.flattenImage = false;
+      }
       return newState;
     }
 

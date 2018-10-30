@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { debounce } from 'lodash';
 import styles from './style/panel.module.scss';
 
-class Panel extends Component {
+export class Panel extends Component {
   constructor(props) {
     super(props);
     this.setWidth = React.createRef();

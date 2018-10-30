@@ -48,7 +48,7 @@ class Board extends Component {
   handleMouseDown(ev) {
     let x = ev.nativeEvent.offsetX;
     let y = ev.nativeEvent.offsetY;
-    const context = this.snapGuideLayer.current.getContext('2d');//
+    const context = this.snapGuideLayer.current.getContext('2d');
     if (this.props.polyEditMode) {
 
     } else {
@@ -148,7 +148,7 @@ class Board extends Component {
       }
     }
 
-    if (this.state.isMousedown) {///////// when move wht mouse down
+    if (this.state.isMousedown) {// when move wht mouse down
       if (this.props.polyEditMode) {
         for (let i = 0; i < vertexNode.length; i++) {
           if ((Math.abs(vertexNode[i].x - x) < vertexSnapGap) && (Math.abs(vertexNode[i].y - y) < vertexSnapGap)) {
@@ -292,7 +292,7 @@ class Board extends Component {
         context.lineTo(vertices[i + maxCols + 1].x, vertices[i + maxCols + 1].y);
         context.closePath();
         colorData = this.getColorAverage(vertices[i].x, vertices[i].y, vertices[i + maxCols].x, vertices[i + maxCols].y, vertices[i + maxCols + 1].x, vertices[i + maxCols + 1].y);
-        context.fillStyle = `rgb(${colorData.r}, ${colorData.g}, ${colorData.b})`
+        context.fillStyle = `rgb(${colorData.r}, ${colorData.g}, ${colorData.b})`;
         context.fill();
 
         context.beginPath();
@@ -301,7 +301,7 @@ class Board extends Component {
         context.lineTo(vertices[i + maxCols + 1].x, vertices[i + maxCols + 1].y);
         context.closePath();
         colorData = this.getColorAverage(vertices[i].x, vertices[i].y, vertices[i + 1].x, vertices[i + 1].y, vertices[i + maxCols + 1].x, vertices[i + maxCols + 1].y);
-        context.fillStyle = `rgb(${colorData.r}, ${colorData.g}, ${colorData.b})`
+        context.fillStyle = `rgb(${colorData.r}, ${colorData.g}, ${colorData.b})`;
         context.fill();
 
       } else if (vertices[i - 1] && vertices[i + maxCols] && vertices[i].col > 0) {
@@ -311,7 +311,7 @@ class Board extends Component {
         context.lineTo(vertices[i + maxCols - 1].x, vertices[i + maxCols - 1].y);
         context.closePath();
         colorData = this.getColorAverage(vertices[i].x, vertices[i].y, vertices[i - 1].x, vertices[i - 1].y, vertices[i + maxCols - 1].x, vertices[i + maxCols - 1].y);
-        context.fillStyle = `rgb(${colorData.r}, ${colorData.g}, ${colorData.b})`
+        context.fillStyle = `rgb(${colorData.r}, ${colorData.g}, ${colorData.b})`;
         context.fill();
 
         context.beginPath();
@@ -320,7 +320,7 @@ class Board extends Component {
         context.lineTo(vertices[i + maxCols - 1].x, vertices[i + maxCols - 1].y);
         context.closePath();
         colorData = this.getColorAverage(vertices[i].x, vertices[i].y, vertices[i + maxCols].x, vertices[i + maxCols].y, vertices[i + maxCols - 1].x, vertices[i + maxCols - 1].y);
-        context.fillStyle = `rgb(${colorData.r}, ${colorData.g}, ${colorData.b})`
+        context.fillStyle = `rgb(${colorData.r}, ${colorData.g}, ${colorData.b})`;
         context.fill();
       }
     }

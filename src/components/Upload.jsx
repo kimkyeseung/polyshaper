@@ -8,7 +8,7 @@ class Upload extends Component {
       active: false,
       target: false,
       hover: false
-    }
+    };
     this.imageFileValidater = this.imageFileValidater.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
     this.handleDragEnter = this.handleDragEnter.bind(this);
@@ -37,12 +37,13 @@ class Upload extends Component {
         let fileSize = ev.target.files[0].size;
         if (fileSize > 10485760) {
           alert('image file size must under the 10MB');
-          return;
+          this.props.uploadImageHandler(null);
         }
       }
       this.props.uploadImageHandler(uploadedImageFile);
     } else {
       alert('only image file available');
+      this.props.uploadImageHandler(null);
     }
   }
 
@@ -65,7 +66,6 @@ class Upload extends Component {
   handleDrop(ev) {
     ev.preventDefault();
     ev.stopPropagation();
-    console.log(ev.nativeEvent.dataTransfer);
     
     var uploadObj = {
       target: ev.nativeEvent.dataTransfer

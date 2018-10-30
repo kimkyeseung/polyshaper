@@ -9,8 +9,9 @@ import {
   SET_BACKGROUND_POLY,
   DOWNLOAD_FLATTEN_IMG
 } from '../constants/actionTypes';
+import autoPopulate from '../lib/autoPopulate';
 
-const defaultState = {
+export const defaultState = {
   uploadedImage: null,
   scale: 1,
   vertexSnapGap: 10,
@@ -32,7 +33,11 @@ const reducer = (state = defaultState, action) => {
   let newState = cloneDeep(state);
   switch (action.type) {
     case IMAGE_UPLOAD: {
-      newState.uploadedImage = action.imageFile;
+      if (action.imageFile) {
+        newState.uploadedImage = action.imageFile;
+      } else {
+        newState.uploadedImage = null;
+      }
       newState.backgroundVertexNode = [];
       newState.vertexNode = [];
       newState.faceNode = [];
@@ -58,7 +63,9 @@ const reducer = (state = defaultState, action) => {
     }
 
     case MAKE_VERTEX: {
-      newState.vertexNode.push(action.vertex);
+      if (action.vertex) {
+        newState.vertexNode.push(action.vertex);
+      }
       return newState;
     }
 
@@ -68,33 +75,7 @@ const reducer = (state = defaultState, action) => {
     }
 
     case AUTO_POPULATE: {
-      const backgroundVertexNode = [];
-      let row = 0;
-      let col = 0;
-      let maxCols = newState.backgroundMaxCols;
-      let maxRows = newState.backgroundMaxRows;
-      let amount = maxCols * maxRows;
-      for (let i = 0; i < amount; i++) {
-        let vertex = {};
-        if (row % 2 === 0) {
-          vertex.x = (col * newState.backgroundCellSize) - newState.backgroundCellSize;
-        } else {
-          vertex.x = (col * newState.backgroundCellSize) - newState.backgroundCellSize - newState.backgroundCellSize / 2;
-        }
-        vertex.x = vertex.x + (Math.random() - 0.5) * newState.backgroundVariance * newState.backgroundCellSize * 2;
-        vertex.y = (row * newState.backgroundCellSize * 0.865) - newState.backgroundCellSize;
-        vertex.y = vertex.y + (Math.random() - 0.5) * newState.backgroundVariance * newState.backgroundCellSize * 2;
-        vertex.col = col;
-        vertex.row = row;
-        backgroundVertexNode.push(vertex);
-        col++;
-        if ((i + 1) % maxCols === 0) {
-          row++;
-          col = 0;
-        }
-      }
-      newState.backgroundVertexNode = backgroundVertexNode;
-      return newState;
+      return autoPopulate(newState);
     }
 
     case SET_BACKGROUND_POLY: {

@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "connected-react-router": "^4.5.0",
+    "deep-freeze": "0.0.1",
     "history": "^4.7.2",
     "lodash": "^4.17.11",
     "node-sass": "^4.9.4",
@@ -18,6 +19,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:debug": "react-scripts --inspect-brk test --runInBand",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

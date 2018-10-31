@@ -92,11 +92,10 @@ export class Panel extends Component {
               this.handleAutoPopulateValueChange(ev.target.value, 'cellsize');
             }}
           />
-          <button onClick={this.handleAutoPopulateButtonClick.bind(this)}>Auto Populate</button>
-
+          <button className={styles["auto-populate"]} onClick={this.handleAutoPopulateButtonClick.bind(this)}>Auto Populate</button>
         </fieldset>
 
-        <button className="download-image" onClick={this.handlieImageDownloadClick.bind(this)}>Download Image</button>
+        <button className={styles["download-image"]} onClick={this.handlieImageDownloadClick.bind(this)}>Download Image</button>
       </div>
     );
   }

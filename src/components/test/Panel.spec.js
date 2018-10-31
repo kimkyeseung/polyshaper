@@ -1,9 +1,7 @@
 import 'jsdom-global/register';
 import React from 'react';
 import Panel from '../Panel';
-import renderer from 'react-test-renderer';
-import Adapter from 'enzyme-adapter-react-16';
-import { shallow, mount, render } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 
 function setup(canvasWidth, canvasHeight, backgroundVertexNode, backgroundCellSize, backgroundVariance, backgroundMaxCols, backgroundMaxRows) {
 

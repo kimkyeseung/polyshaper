@@ -5,43 +5,28 @@ import Adapter from 'enzyme-adapter-react-16';
 import { shallow, mount, render } from 'enzyme';
 
 function setup() {
-  const actions = {
-    downloadFlattenImage: jest.fn(),
-    autoPopulate: jest.fn(),
-
-  }
+  const downloadFlattenImage = jest.fn();
 
   const component = shallow(
     <Panel
-      editMode={this.props.editMode}
-      autoPopulate={this.props.autoPopulate}
-      canvasWidth={this.props.canvasWidth}
-      canvasHeight={this.props.canvasHeight}
-      backgroundVertexNode={this.props.backgroundVertexNode}
-      backgroundMaxCols={this.props.backgroundMaxCols}
-      backgroundMaxRows={this.props.backgroundMaxRows}
-      backgroundVariance={this.props.backgroundVariance}
-      backgroundCellSize={this.props.backgroundCellSize}
-      setBackgroundPoly={this.props.setBackgroundPoly}
-      downloadFlattenImage={this.props.downloadFlattenImage}
+      downloadFlattenImage={downloadFlattenImage}
     />
   );
   
   return {
     component,
-    actions
-  }
-};
+    downloadButton: component.find('.download-image'),
+    props: {
+      downloadFlattenImage
+    }
+  };
+}
 
 describe('Panel component', () => {
-  let component = null;
-
-  it('render correctly', () => {
-    component = renderer.create(<Panel />);
+  it('should trigger `downloadFlattenImageProp` when download image button is clicked', () => {
+    const { props, downloadButton } = setup();
+    downloadButton.simulate('click');
+    expect(props.downloadFlattenImage.mock.calls.length).toBe(1);
+    expect(props.downloadFlattenImage.mock.calls[0][0]).toBe(true);
   });
-
-  it('match snapshot', () => {
-    expect(component).toMatchSnapshot();
-  });
-
 });

@@ -96,7 +96,7 @@ export class Panel extends Component {
 
         </fieldset>
 
-        <button onClick={this.handlieImageDownloadClick.bind(this)}>Download Image</button>
+        <button className="download-image" onClick={this.handlieImageDownloadClick.bind(this)}>Download Image</button>
       </div>
     );
   }

@@ -1,7 +1,7 @@
 import 'jsdom-global/register';
 import React from 'react';
 import Upload from '../Upload';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import { JSDOM } from 'jsdom';
 
 function setup() {

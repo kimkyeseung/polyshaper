@@ -14,7 +14,9 @@ class Board extends Component {
     this.state = {
       vertexId: 0,
       vertices: [],
-      isMousedown: false
+      isMousedown: false,
+      selectedVertex: null,
+      selectedFace: null
     };
     this.shortcut = this.shortcut.bind(this);
   }
@@ -34,7 +36,7 @@ class Board extends Component {
   componentDidUpdate() {
     this.drawPoly();
     if (this.props.polyEditMode) {
-      this.drawVertex();
+      this.drawEditModeVertex();
     }
     if (this.props.backgroundVertexNode.length) {
       const backgroundVertexNode = this.props.backgroundVertexNode.slice();
@@ -71,111 +73,43 @@ class Board extends Component {
       isMousedown: false
     });
     if (this.props.polyEditMode) {
-      // this.drawVertex();
+      // this.drawEditModeVertex();
     } else {
-      this.addVertex(ev);
+      const vertexNode = this.props.vertexNode.slice();
+      const { x, y } = this.snapToPoint(ev.nativeEvent.offsetX, ev.nativeEvent.offsetY, vertexNode);
+      this.makeVertex(x, y);
     }
-  }
-
-  addVertex(ev) {
-    console.log('add vertex');
-    let x = ev.nativeEvent.offsetX;
-    let y = ev.nativeEvent.offsetY;
-    const vertexNode = this.props.vertexNode.slice();
-    const vertexSnapGap = this.props.vertexSnapGap;
-
-    if (x < vertexSnapGap || x > this.snapGuideLayer.current.width - vertexSnapGap || y < vertexSnapGap || y > this.snapGuideLayer.current.height - vertexSnapGap) {
-      if (x < vertexSnapGap) {
-        x = 0;
-      }
-      if (y < vertexSnapGap) {
-        y = 0;
-      }
-      if (x > this.snapGuideLayer.current.width - vertexSnapGap) {
-        x = this.snapGuideLayer.current.width;
-      }
-      if (y > this.snapGuideLayer.current.height - vertexSnapGap) {
-        y = this.snapGuideLayer.current.height;
-      }
-    } else {
-      x = ev.nativeEvent.offsetX;
-      y = ev.nativeEvent.offsetY;
-    }
-    for (let i = 0; i < vertexNode.length; i++) {
-      if ((Math.abs(vertexNode[i].x - x) < vertexSnapGap) && (Math.abs(vertexNode[i].y - y) < vertexSnapGap)) {
-        x = vertexNode[i].x;
-        y = vertexNode[i].y;
-        i = vertexNode.length;
-      }
-    }
-    this.makeVertex(x, y);
   }
 
   handleMouseMove(ev) {
-    let x = ev.nativeEvent.offsetX;
-    let y = ev.nativeEvent.offsetY;
     const vertexNode = this.props.vertexNode.slice();
-    const vertexSnapGap = this.props.vertexSnapGap;
-    const snapGuideContext = this.snapGuideLayer.current.getContext('2d'); // vv this is for the snap
-    if (x < vertexSnapGap || x > this.snapGuideLayer.current.width - vertexSnapGap || y < vertexSnapGap || y > this.snapGuideLayer.current.height - vertexSnapGap) {
-      if (x < vertexSnapGap) {
-        x = 0;
-      }
-      if (y < vertexSnapGap) {
-        y = 0;
-      }
-      if (x > this.snapGuideLayer.current.width - vertexSnapGap) {
-        x = this.snapGuideLayer.current.width;
-      }
-      if (y > this.snapGuideLayer.current.height - vertexSnapGap) {
-        y = this.snapGuideLayer.current.height;
-      }
-      snapGuideContext.beginPath();
-      snapGuideContext.clearRect(0, 0, this.snapGuideLayer.current.width, this.snapGuideLayer.current.height);//this clear all
-      snapGuideContext.arc(x, y, 3, 0, Math.PI * 2);
-      snapGuideContext.fillStyle = 'orange';
-      snapGuideContext.fill();
-    } else {
-      snapGuideContext.clearRect(0, 0, this.snapGuideLayer.current.width, this.snapGuideLayer.current.height);
-    }
-    for (let i = 0; i < vertexNode.length; i++) {
-      if ((Math.abs(vertexNode[i].x - x) < vertexSnapGap) && (Math.abs(vertexNode[i].y - y) < vertexSnapGap)) {
-        snapGuideContext.beginPath();
-        snapGuideContext.clearRect(0, 0, this.snapGuideLayer.current.width, this.snapGuideLayer.current.height);
-        snapGuideContext.arc(vertexNode[i].x, vertexNode[i].y, 3, 0, Math.PI * 2);
-        snapGuideContext.fillStyle = 'orange';
-        snapGuideContext.fill();
-        i = vertexNode.length;
-      } else {
-        snapGuideContext.clearRect(vertexNode[i].x - 3, vertexNode[i].y - 3, 6, 6);
-      }
-    }
+    const { x, y } = this.snapToPoint(ev.nativeEvent.offsetX, ev.nativeEvent.offsetY, vertexNode);
 
-    if (this.state.isMousedown) {// when move wht mouse down
-      if (this.props.polyEditMode) {
-        for (let i = 0; i < vertexNode.length; i++) {
-          if ((Math.abs(vertexNode[i].x - x) < vertexSnapGap) && (Math.abs(vertexNode[i].y - y) < vertexSnapGap)) {
-            vertexNode[i].x = x;
-            vertexNode[i].y = y;
-            this.drawPoly();
-          }
-        }
-      } else {
-        const context = this.canvas.current.getContext('2d');//fixed
-        const vertices = this.state.vertices.slice();
-        context.beginPath();
-        context.clearRect(x - 3, y - 3, 6, 6);
-        context.arc(x, y, 3, 0, Math.PI * 2);
-        context.fillStyle = 'orange';
-        context.fill();
-        for (let i = 0; i < vertices.length; i++) {
-          context.clearRect(vertices[i].x - 3, vertices[i].y - 3, 6, 6);
-          context.arc(x, y, 3, 0, Math.PI * 2);
-          context.fillStyle = 'orange';
-          context.fill();
-        }
-      }
-    }
+    // if (this.state.isMousedown) {// when move wht mouse down
+    //   if (this.props.polyEditMode) {
+    //     for (let i = 0; i < vertexNode.length; i++) {
+    //       if ((Math.abs(vertexNode[i].x - x) < vertexSnapGap) && (Math.abs(vertexNode[i].y - y) < vertexSnapGap)) {
+    //         vertexNode[i].x = x;
+    //         vertexNode[i].y = y;
+    //         this.drawPoly();
+    //       }
+    //     }
+    //   } else {
+    //     const context = this.canvas.current.getContext('2d');//fixed
+    //     const vertices = this.state.vertices.slice();
+    //     context.beginPath();
+    //     context.clearRect(x - 3, y - 3, 6, 6);
+    //     context.arc(x, y, 3, 0, Math.PI * 2);
+    //     context.fillStyle = 'orange';
+    //     context.fill();
+    //     for (let i = 0; i < vertices.length; i++) {
+    //       context.clearRect(vertices[i].x - 3, vertices[i].y - 3, 6, 6);
+    //       context.arc(x, y, 3, 0, Math.PI * 2);
+    //       context.fillStyle = 'orange';
+    //       context.fill();
+    //     }
+    //   }
+    // }
   }
 
   makeVertex(x, y) {
@@ -256,6 +190,46 @@ class Board extends Component {
     return rgb;
   }
 
+  snapToPoint(x, y, layerVertexNodeArray) {
+    const vertexSnapGap = this.props.vertexSnapGap;
+    const snapGuideContext = this.snapGuideLayer.current.getContext('2d'); // vv this is for the snap
+
+    for (let i = 0; i < layerVertexNodeArray.length; i++) {
+      if ((Math.abs(layerVertexNodeArray[i].x - x) < vertexSnapGap) && (Math.abs(layerVertexNodeArray[i].y - y) < vertexSnapGap)) {
+        x = layerVertexNodeArray[i].x;
+        y = layerVertexNodeArray[i].y;
+        snapGuideContext.beginPath();
+        snapGuideContext.clearRect(0, 0, this.snapGuideLayer.current.width, this.snapGuideLayer.current.height); //this snapGuide layer clear all
+        snapGuideContext.arc(x, y, 3, 0, Math.PI * 2);
+        snapGuideContext.fillStyle = 'orange';
+        snapGuideContext.fill();
+        break;
+      } else if (x < vertexSnapGap || x > this.snapGuideLayer.current.width - vertexSnapGap || y < vertexSnapGap || y > this.snapGuideLayer.current.height - vertexSnapGap) {
+        if (x < vertexSnapGap) {
+          x = 0;
+        }
+        if (y < vertexSnapGap) {
+          y = 0;
+        }
+        if (x > this.snapGuideLayer.current.width - vertexSnapGap) {
+          x = this.snapGuideLayer.current.width;
+        }
+        if (y > this.snapGuideLayer.current.height - vertexSnapGap) {
+          y = this.snapGuideLayer.current.height;
+        }
+        snapGuideContext.beginPath();
+        snapGuideContext.clearRect(0, 0, this.snapGuideLayer.current.width, this.snapGuideLayer.current.height); //this snapGuide layer clear all
+        snapGuideContext.arc(x, y, 3, 0, Math.PI * 2);
+        snapGuideContext.fillStyle = 'orange';
+        snapGuideContext.fill();
+        break;
+      } else {
+        snapGuideContext.clearRect(0, 0, this.snapGuideLayer.current.width, this.snapGuideLayer.current.height);
+      }
+    }
+    return { x, y };
+  }
+
   drawPoly() {//draw colored poly when component updated
     console.log('drawpoly when component updated');
     const context = this.canvas.current.getContext('2d');
@@ -273,7 +247,7 @@ class Board extends Component {
     });
   }
 
-  drawVertex() { //draw vertices when editmode
+  drawEditModeVertex() { //draw vertices when editmode
     const context = this.editModeVertexLayer.current.getContext('2d');
     const vertexNode = this.props.vertexNode.slice();
     vertexNode.forEach(vertex => {
@@ -338,8 +312,8 @@ class Board extends Component {
 
   flattenImage() {
     const context = this.flatten.current.getContext('2d');
-    context.drawImage(this.backgroundLayer.current, 0 ,0, this.props.canvasWidth, this.props.canvasHeight);
-    context.drawImage(this.canvas.current, 0 ,0, this.props.canvasWidth, this.props.canvasHeight);
+    context.drawImage(this.backgroundLayer.current, 0, 0, this.props.canvasWidth, this.props.canvasHeight);
+    context.drawImage(this.canvas.current, 0, 0, this.props.canvasWidth, this.props.canvasHeight);
 
     let dataURL = this.flatten.current.toDataURL("image/png");
     this.props.downloadFlattenImage(false);
@@ -386,7 +360,7 @@ class Board extends Component {
               width={this.props.canvasWidth}
               height={this.props.canvasHeight}
               ref={this.editModeVertexLayer}
-              onLoad={this.drawVertex.bind(this)}
+              onLoad={this.drawEditModeVertex.bind(this)}
             />
             : null
         }

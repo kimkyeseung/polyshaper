@@ -15,7 +15,7 @@ class Board extends Component {
       vertexId: 0,
       vertices: [],
       isMousedown: false,
-      selectedVertexIndex: null
+      selectedVertexIndex: -1
     };
     this.shortcut = this.shortcut.bind(this);
   }
@@ -57,7 +57,7 @@ class Board extends Component {
     if (this.props.polyEditMode) {
       const vertexNode = this.props.vertexNode.slice();
       const { x, y, vertexId } = this.snapToPoint(ev.nativeEvent.offsetX, ev.nativeEvent.offsetY, vertexNode);
-      if (vertexId) {
+      if (vertexId >= 0) {
         this.setState({
           selectedVertexIndex: vertexId
         });
@@ -76,7 +76,7 @@ class Board extends Component {
     console.log('ev mouseup');
     this.setState({
       isMousedown: false,
-      selectedVertexIndex: null
+      selectedVertexIndex: -1
     });
     const vertexNode = this.props.vertexNode.slice();
     if (this.props.polyEditMode) {
@@ -95,7 +95,7 @@ class Board extends Component {
     const { x, y } = this.snapToPoint(ev.nativeEvent.offsetX, ev.nativeEvent.offsetY, vertexNode);
 
     if (this.props.polyEditMode) {
-      if (this.state.selectedVertexIndex) {
+      if (this.state.selectedVertexIndex > -1) {
         this.props.selectedVertexAdjustPosition(x, y, this.state.selectedVertexIndex);
       }
     }

@@ -5,7 +5,10 @@ import {
   EDIT_MODE_TOGGLE,
   AUTO_POPULATE,
   SET_BACKGROUND_POLY,
-  DOWNLOAD_FLATTEN_IMG
+  DOWNLOAD_FLATTEN_IMG,
+  SELECT_LAYER,
+  SELECT_FACE,
+  ADJUST_VERTEX_POSITION
 } from '../constants/actionTypes';
 
 let faceId = 0;
@@ -68,4 +71,27 @@ export const downloadFlattenImage = request => {
     type: DOWNLOAD_FLATTEN_IMG,
     request
   }
+};
+export const layerSelectHandler = layer => {
+  return {
+    type: SELECT_LAYER,
+    layer
+  };
+};
+
+export const faceSelectHandler = face => {
+  return {
+    type: SELECT_FACE,
+    face
+  };
+};
+
+export const selectedVertexAdjustPosition = (x, y, index) => {
+  console.log(x, y, index);
+  return {
+    type: ADJUST_VERTEX_POSITION,
+    index,
+    x,
+    y
+  };
 };

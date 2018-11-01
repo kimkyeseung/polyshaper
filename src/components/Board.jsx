@@ -15,8 +15,7 @@ class Board extends Component {
       vertexId: 0,
       vertices: [],
       isMousedown: false,
-      selectedVertex: null,
-      selectedFace: null
+      selectedVertexIndex: null
     };
     this.shortcut = this.shortcut.bind(this);
   }
@@ -56,7 +55,13 @@ class Board extends Component {
     let y = ev.nativeEvent.offsetY;
     const context = this.snapGuideLayer.current.getContext('2d');
     if (this.props.polyEditMode) {
-
+      const vertexNode = this.props.vertexNode.slice();
+      const { x, y, vertexId } = this.snapToPoint(ev.nativeEvent.offsetX, ev.nativeEvent.offsetY, vertexNode);
+      if (vertexId) {
+        this.setState({
+          selectedVertexIndex: vertexId
+        });
+      }
     } else {
       context.beginPath();
       context.clearRect(x - 3, y - 3, 6, 6);
@@ -70,12 +75,16 @@ class Board extends Component {
   handleMouseUp(ev) {
     console.log('ev mouseup');
     this.setState({
-      isMousedown: false
+      isMousedown: false,
+      selectedVertexIndex: null
     });
+    const vertexNode = this.props.vertexNode.slice();
     if (this.props.polyEditMode) {
-      // this.drawEditModeVertex();
+      // if (this.state.selectedVertexIndex) {
+      //   const { x, y } = this.snapToPoint(ev.nativeEvent.offsetX, ev.nativeEvent.offsetY, vertexNode);
+      //   this.props.selectedVertexAdjustPosition(x, y, this.state.selectedVertexIndex);
+      // }
     } else {
-      const vertexNode = this.props.vertexNode.slice();
       const { x, y } = this.snapToPoint(ev.nativeEvent.offsetX, ev.nativeEvent.offsetY, vertexNode);
       this.makeVertex(x, y);
     }
@@ -85,6 +94,11 @@ class Board extends Component {
     const vertexNode = this.props.vertexNode.slice();
     const { x, y } = this.snapToPoint(ev.nativeEvent.offsetX, ev.nativeEvent.offsetY, vertexNode);
 
+    if (this.props.polyEditMode) {
+      if (this.state.selectedVertexIndex) {
+        this.props.selectedVertexAdjustPosition(x, y, this.state.selectedVertexIndex);
+      }
+    }
     // if (this.state.isMousedown) {// when move wht mouse down
     //   if (this.props.polyEditMode) {
     //     for (let i = 0; i < vertexNode.length; i++) {
@@ -117,7 +131,6 @@ class Board extends Component {
       return;
     }
     const context = this.canvas.current.getContext('2d');
-    console.log('ev makevertex', x, y);
     context.beginPath();
     context.arc(x, y, 3, 0, Math.PI * 2);
     context.fillStyle = 'red';
@@ -193,8 +206,9 @@ class Board extends Component {
   snapToPoint(x, y, layerVertexNodeArray) {
     const vertexSnapGap = this.props.vertexSnapGap;
     const snapGuideContext = this.snapGuideLayer.current.getContext('2d'); // vv this is for the snap
-
-    for (let i = 0; i < layerVertexNodeArray.length; i++) {
+    let i;
+    let vertexId;
+    for (i = 0; i < layerVertexNodeArray.length; i++) {
       if ((Math.abs(layerVertexNodeArray[i].x - x) < vertexSnapGap) && (Math.abs(layerVertexNodeArray[i].y - y) < vertexSnapGap)) {
         x = layerVertexNodeArray[i].x;
         y = layerVertexNodeArray[i].y;
@@ -203,7 +217,8 @@ class Board extends Component {
         snapGuideContext.arc(x, y, 3, 0, Math.PI * 2);
         snapGuideContext.fillStyle = 'orange';
         snapGuideContext.fill();
-        break;
+        vertexId = layerVertexNodeArray[i].id;
+        i = layerVertexNodeArray.length;
       } else if (x < vertexSnapGap || x > this.snapGuideLayer.current.width - vertexSnapGap || y < vertexSnapGap || y > this.snapGuideLayer.current.height - vertexSnapGap) {
         if (x < vertexSnapGap) {
           x = 0;
@@ -222,12 +237,13 @@ class Board extends Component {
         snapGuideContext.arc(x, y, 3, 0, Math.PI * 2);
         snapGuideContext.fillStyle = 'orange';
         snapGuideContext.fill();
-        break;
+        i = layerVertexNodeArray.length;
       } else {
         snapGuideContext.clearRect(0, 0, this.snapGuideLayer.current.width, this.snapGuideLayer.current.height);
       }
     }
-    return { x, y };
+    console.log(vertexId);
+    return { x, y, vertexId };
   }
 
   drawPoly() {//draw colored poly when component updated
@@ -235,7 +251,9 @@ class Board extends Component {
     const context = this.canvas.current.getContext('2d');
     const vertexNode = this.props.vertexNode.slice();
     const faceNode = this.props.faceNode.slice();
-    // context.clearRect(0, 0, this.canvas.current.width, this.canvas.current.height);
+    if (!this.state.vertices.length) {
+      context.clearRect(0, 0, this.canvas.current.width, this.canvas.current.height);
+    }
     faceNode.forEach(face => {
       context.beginPath();
       context.moveTo(vertexNode[face.vertices[0]].x, vertexNode[face.vertices[0]].y);
@@ -250,6 +268,7 @@ class Board extends Component {
   drawEditModeVertex() { //draw vertices when editmode
     const context = this.editModeVertexLayer.current.getContext('2d');
     const vertexNode = this.props.vertexNode.slice();
+    context.clearRect(0, 0, this.canvas.current.width, this.canvas.current.height);////
     vertexNode.forEach(vertex => {
       context.beginPath();
       context.moveTo(vertex.x, vertex.y);

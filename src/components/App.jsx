@@ -32,6 +32,8 @@ class App extends Component {
                   backgroundCellSize={this.props.backgroundCellSize}
                   setBackgroundPoly={this.props.setBackgroundPoly}
                   downloadFlattenImage={this.props.downloadFlattenImage}
+                  selectedLayer={this.props.selectedLayer}
+                  selectedFace={this.props.selectedFace}
                 />
               </section>
               <section className={styles.boardSection}>
@@ -53,6 +55,9 @@ class App extends Component {
                   canvasHeight={this.props.canvasHeight}
                   flattenImage={this.props.flattenImage}
                   downloadFlattenImage={this.props.downloadFlattenImage}
+                  selectedVertexAdjustPosition={this.props.selectedVertexAdjustPosition}
+                  faceSelectHandler={this.props.faceSelectHandler}
+                  layerSelectHandler={this.props.layerSelectHandler}
                 />
                 <button onClick={this.resetPicture.bind(this)} style={{display: 'block', margin: '40px auto'}}>Reset Picture</button>
               </section>

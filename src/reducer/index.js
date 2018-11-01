@@ -7,7 +7,10 @@ import {
   EDIT_MODE_TOGGLE,
   AUTO_POPULATE,
   SET_BACKGROUND_POLY,
-  DOWNLOAD_FLATTEN_IMG
+  DOWNLOAD_FLATTEN_IMG,
+  SELECT_LAYER,
+  SELECT_FACE,
+  ADJUST_VERTEX_POSITION
 } from '../constants/actionTypes';
 import autoPopulate from '../lib/autoPopulate';
 
@@ -26,7 +29,10 @@ export const defaultState = {
   backgroundCellSize: 60,
   backgroundMaxCols: 0,
   backgroundMaxRows: 0,
-  flattenImage: false
+  flattenImage: false,
+
+  selectedLayer: null,
+  selectedFace: null
 };
 
 const reducer = (state = defaultState, action) => {
@@ -95,6 +101,22 @@ const reducer = (state = defaultState, action) => {
       } else {
         newState.flattenImage = false;
       }
+      return newState;
+    }
+
+    case SELECT_LAYER: {
+      newState.selectedLayer = action.layer;
+      return newState;
+    }
+
+    case SELECT_FACE: {
+      newState.selectedFace = action.face;
+      return newState;
+    }
+
+    case ADJUST_VERTEX_POSITION: {
+      newState.vertexNode[action.index].x = action.x;
+      newState.vertexNode[action.index].y = action.y;
       return newState;
     }
 

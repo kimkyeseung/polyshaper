@@ -14,11 +14,13 @@ class Upload extends Component {
     this.handleDragEnter = this.handleDragEnter.bind(this);
     this.handleDragOver = this.handleDragOver.bind(this);
     this.handleDragLeave = this.handleDragLeave.bind(this);
+    this.dropTarget = this.dropTarget.bind(this);
+    this.dropLeave = this.dropLeave.bind(this);
   }
 
   componentDidMount() {
-    window.addEventListener('dragover', this.dropTarget.bind(this));
-    window.addEventListener('dragleave', this.dropLeave.bind(this));
+    window.addEventListener('dragover', this.dropTarget);
+    window.addEventListener('dragleave', this.dropLeave);
     window.addEventListener('drop', this.handleDrop);
   }
 

@@ -286,6 +286,7 @@ class Board extends Component {
   }
 
   drawBackground(vertices) {
+    console.log('draw bg');
     const context = this.backgroundLayer.current.getContext('2d');
     let maxCols = this.props.backgroundMaxCols;
     let colorData;

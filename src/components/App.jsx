@@ -3,6 +3,7 @@ import styles from './style/app.module.scss';
 import Upload from './Upload';
 import Board from './Board';
 import Panel from './Panel';
+import Message from './Message';
 
 class App extends Component {
   resetPicture() {
@@ -16,6 +17,9 @@ class App extends Component {
           <h1 className={styles.infoText}>Polyshaper</h1>
         </header>
         {
+          this.props.message.length ? <Message message={this.props.message}/> : null
+        }
+        {
           this.props.uploadedImage
             ? 
             <div>
@@ -25,6 +29,7 @@ class App extends Component {
                   autoPopulate={this.props.autoPopulate}
                   canvasWidth={this.props.canvasWidth}
                   canvasHeight={this.props.canvasHeight}
+                  polyEditMode={this.props.polyEditMode}
                   backgroundVertexNode={this.props.backgroundVertexNode}
                   backgroundMaxCols={this.props.backgroundMaxCols}
                   backgroundMaxRows={this.props.backgroundMaxRows}
@@ -38,6 +43,7 @@ class App extends Component {
               </section>
               <section className={styles.boardSection}>
                 <Board
+                  editMode={this.props.editMode}
                   uploadedImage={this.props.uploadedImage}
                   setUpCanvasSize={this.props.setUpCanvasSize}
                   makeFace={this.props.makeFace}
@@ -58,6 +64,7 @@ class App extends Component {
                   selectedVertexAdjustPosition={this.props.selectedVertexAdjustPosition}
                   faceSelectHandler={this.props.faceSelectHandler}
                   layerSelectHandler={this.props.layerSelectHandler}
+                  noticeMessage={this.props.noticeMessage}
                 />
                 <button onClick={this.resetPicture.bind(this)} style={{display: 'block', margin: '40px auto'}}>Reset Picture</button>
               </section>

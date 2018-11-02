@@ -10,7 +10,8 @@ import {
   DOWNLOAD_FLATTEN_IMG,
   SELECT_LAYER,
   SELECT_FACE,
-  ADJUST_VERTEX_POSITION
+  ADJUST_VERTEX_POSITION,
+  NOTICE_MESSAGE
 } from '../constants/actionTypes';
 import autoPopulate from '../lib/autoPopulate';
 
@@ -32,7 +33,8 @@ export const defaultState = {
   flattenImage: false,
 
   selectedLayer: null,
-  selectedFace: null
+  selectedFace: null,
+  message: []
 };
 
 const reducer = (state = defaultState, action) => {
@@ -117,6 +119,15 @@ const reducer = (state = defaultState, action) => {
     case ADJUST_VERTEX_POSITION: {
       newState.vertexNode[action.index].x = action.x;
       newState.vertexNode[action.index].y = action.y;
+      return newState;
+    }
+
+    case NOTICE_MESSAGE: {
+      if (action.message) {
+        newState.message.push(action.message);
+      } else {
+        newState.message.shift();
+      }
       return newState;
     }
 

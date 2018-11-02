@@ -17,19 +17,41 @@ class Board extends Component {
       isMousedown: false,
       selectedVertexIndex: -1
     };
-    this.shortcut = this.shortcut.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleKeyUp = this.handleKeyUp.bind(this);
   }
 
   componentDidMount() {
-    document.body.addEventListener('keydown', this.shortcut);
+    document.body.addEventListener('keydown', this.handleKeyDown);
+    document.body.addEventListener('keyup', this.handleKeyUp);
   }
 
   componentWillUnmount() {
-    document.body.removeEventListener('keydown', this.shortcut);
+    document.body.removeEventListener('keydown', this.handleKeyDown);
+    document.body.addEventListener('keyup', this.handleKeyUp);
   }
 
-  shortcut(ev) {
-    console.log(ev.keyCode);
+  handleKeyDown(ev) {
+
+    if (ev.metaKey && ev.key === 'e') {
+      if (this.props.polyEditMode) {
+        this.props.noticeMessage('Change to Add Mode');
+        this.props.editMode(false);
+      } else {
+        this.props.editMode(true);
+        this.props.noticeMessage('Change to Edit Mode');
+      }
+    }
+
+    if (ev.key === 'Escape' && this.state.vertices.length > 0) {
+      this.setState({
+        vertices: []
+      });
+      this.props.noticeMessage('Remove Current Vertices');
+    }
+  }
+
+  handleKeyUp(ev) {
   }
 
   componentDidUpdate() {
@@ -73,7 +95,6 @@ class Board extends Component {
   }
 
   handleMouseUp(ev) {
-    console.log('ev mouseup');
     this.setState({
       isMousedown: false,
       selectedVertexIndex: -1
@@ -84,6 +105,10 @@ class Board extends Component {
       //   const { x, y } = this.snapToPoint(ev.nativeEvent.offsetX, ev.nativeEvent.offsetY, vertexNode);
       //   this.props.selectedVertexAdjustPosition(x, y, this.state.selectedVertexIndex);
       // }
+      if (ev.metaKey) {
+        this.selectPoly(ev.nativeEvent.offsetX, ev.nativeEvent.offsetY);
+        
+      }
     } else {
       const { x, y } = this.snapToPoint(ev.nativeEvent.offsetX, ev.nativeEvent.offsetY, vertexNode);
       this.makeVertex(x, y);
@@ -242,8 +267,35 @@ class Board extends Component {
         snapGuideContext.clearRect(0, 0, this.snapGuideLayer.current.width, this.snapGuideLayer.current.height);
       }
     }
-    console.log(vertexId);
     return { x, y, vertexId };
+  }
+
+  selectPoly(x, y) {
+    const vector = (from, to) => [to[0] - from[0], to[1] - from[1]];
+    const dot = (u, v) => u[0] * v[0] + u[1] * v[1];
+    const faceNode = this.props.faceNode.slice();
+    const vertexNode = this.props.vertexNode.slice();
+    for (let i = 0; i < faceNode.length; i++) {
+      let p = [x, y];
+      let a = [vertexNode[faceNode[i].vertices[0]].x, vertexNode[faceNode[i].vertices[0]].y];
+      let b = [vertexNode[faceNode[i].vertices[1]].x, vertexNode[faceNode[i].vertices[1]].y];
+      let c = [vertexNode[faceNode[i].vertices[2]].x, vertexNode[faceNode[i].vertices[2]].y];
+      let v0 = vector(a, c);
+      let v1 = vector(a, b);
+      let v2 = vector(a, p);
+      let dot00 = dot(v0, v0);
+      let dot01 = dot(v0, v1);
+      let dot02 = dot(v0, v2);
+      let dot11 = dot(v1, v1);
+      let dot12 = dot(v1, v2);
+      let invDenom = 1.0 / (dot00 * dot11 - dot01 * dot01);
+      let u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+      let v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+      if ((u >= 0) && (v >= 0) && (u + v < 1)) {
+        this.props.faceSelectHandler(faceNode[i]);
+        i = faceNode.length;
+      }
+    }
   }
 
   drawPoly() {//draw colored poly when component updated

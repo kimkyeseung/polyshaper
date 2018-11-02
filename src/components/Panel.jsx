@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { debounce } from 'lodash';
 import styles from './style/panel.module.scss';
+import { ChromePicker } from 'react-color';
 
 export class Panel extends Component {
   constructor(props) {
@@ -50,6 +51,7 @@ export class Panel extends Component {
             type="checkbox"
             name="editmode"
             id="editmode"
+            checked={this.props.polyEditMode}
             onChange={this.onEditmode.bind(this)}
           />
         </fieldset>
@@ -94,6 +96,15 @@ export class Panel extends Component {
           />
           <button className={styles["auto-populate"]} onClick={this.handleAutoPopulateButtonClick.bind(this)}>Auto Populate</button>
         </fieldset>
+
+        {
+          this.props.selectedFace 
+          ? <fieldset className={styles.colorPick}>
+            <legend>Indivisual Poly Setting</legend>
+            <ChromePicker color={this.props.selectedFace.backgroundColor}/>
+          </fieldset>
+          : null
+        }
 
         <button className={styles["download-image"]} onClick={this.handlieImageDownloadClick.bind(this)}>Download Image</button>
       </div>

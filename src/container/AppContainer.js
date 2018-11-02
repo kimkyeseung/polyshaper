@@ -11,7 +11,8 @@ import {
   downloadFlattenImage,
   layerSelectHandler,
   faceSelectHandler,
-  selectedVertexAdjustPosition
+  selectedVertexAdjustPosition,
+  noticeMessage
 } from '../action';
 import App from '../components/App';
 
@@ -32,7 +33,8 @@ const mapStateToProps = state => {
     backgroundMaxRows: state.backgroundMaxRows,
     flattenImage: state.flattenImage,
     selectedLayer: state.selectedLayer,
-    selectedFace: state.selectedFace
+    selectedFace: state.selectedFace,
+    message: state.message
   };
 };
 
@@ -81,6 +83,14 @@ const mapDispatchToProps = dispatch => {
 
     selectedVertexAdjustPosition(x, y, index) {
       dispatch(selectedVertexAdjustPosition(x, y, index));
+    },
+
+    noticeMessage(message) {
+      dispatch(noticeMessage(message));
+      setTimeout(() => {
+        dispatch(noticeMessage());
+      }, 1200);
+
     }
   };
 };

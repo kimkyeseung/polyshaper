@@ -8,7 +8,8 @@ import {
   DOWNLOAD_FLATTEN_IMG,
   SELECT_LAYER,
   SELECT_FACE,
-  ADJUST_VERTEX_POSITION
+  ADJUST_VERTEX_POSITION,
+  NOTICE_MESSAGE
 } from '../constants/actionTypes';
 
 let faceId = 0;
@@ -87,11 +88,17 @@ export const faceSelectHandler = face => {
 };
 
 export const selectedVertexAdjustPosition = (x, y, index) => {
-  console.log(x, y, index);
   return {
     type: ADJUST_VERTEX_POSITION,
     index,
     x,
     y
+  };
+};
+
+export const noticeMessage = message => {
+  return {
+    type: NOTICE_MESSAGE,
+    message
   };
 };

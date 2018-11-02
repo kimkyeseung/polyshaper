@@ -34,6 +34,10 @@ export class Panel extends Component {
     if (ev.target.checked) {
       this.props.editMode(true);
     } else {
+      if (this.props.selectedFace) {
+        this.props.faceSelectHandler();
+        this.props.noticeMessage('Poly Deselected');
+      }
       this.props.editMode(false);
     }
   }

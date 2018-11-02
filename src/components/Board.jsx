@@ -44,10 +44,23 @@ class Board extends Component {
     }
 
     if (ev.key === 'Escape' && this.state.vertices.length > 0) {
-      this.setState({
-        vertices: []
+      for (let i = 0; i < this.state.vertices.length; i++) {
+        this.props.makeVertex();
+      }
+      this.setState(prevState => {
+        return {
+          vertexId: prevState.vertexId - prevState.vertices.length,
+          vertices: []
+        }
       });
       this.props.noticeMessage('Remove Current Vertices');
+    }
+
+    if (this.props.polyEditMod) {
+      if (this.props.selectedFace && ev.key === 'Escape') {
+        this.props.faceSelectHandler();
+        this.props.noticeMessage('Poly Deselected');
+      }
     }
   }
 
@@ -107,7 +120,7 @@ class Board extends Component {
       // }
       if (ev.metaKey) {
         this.selectPoly(ev.nativeEvent.offsetX, ev.nativeEvent.offsetY);
-        
+
       }
     } else {
       const { x, y } = this.snapToPoint(ev.nativeEvent.offsetX, ev.nativeEvent.offsetY, vertexNode);
@@ -293,6 +306,7 @@ class Board extends Component {
       let v = (dot00 * dot12 - dot01 * dot02) * invDenom;
       if ((u >= 0) && (v >= 0) && (u + v < 1)) {
         this.props.faceSelectHandler(faceNode[i]);
+        this.props.noticeMessage(`Select Indivisual Poly No. ${i}`);
         i = faceNode.length;
       }
     }

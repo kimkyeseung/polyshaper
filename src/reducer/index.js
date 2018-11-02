@@ -74,6 +74,8 @@ const reducer = (state = defaultState, action) => {
     case MAKE_VERTEX: {
       if (action.vertex) {
         newState.vertexNode.push(action.vertex);
+      } else {
+        newState.vertexNode.pop();
       }
       return newState;
     }
@@ -113,7 +115,11 @@ const reducer = (state = defaultState, action) => {
     }
 
     case SELECT_FACE: {
-      newState.selectedFace = action.face;
+      if (action.face) {
+        newState.selectedFace = action.face;
+      } else {
+        newState.selectedFace = null;
+      }
       return newState;
     }
 

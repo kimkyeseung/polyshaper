@@ -57,8 +57,10 @@ class Board extends Component {
       this.props.noticeMessage('Remove Current Vertices');
     }
 
-    if (this.props.polyEditMod) {
+    if (this.props.polyEditMode) {
+      console.log(ev.key, this.props.selectedFace);
       if (this.props.selectedFace && ev.key === 'Escape') {
+        console.log('whi?');
         this.props.faceSelectHandler();
         this.props.noticeMessage('Poly Deselected');
       }

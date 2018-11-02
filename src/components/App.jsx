@@ -41,6 +41,7 @@ class App extends Component {
                   faceSelectHandler={this.props.faceSelectHandler}
                   selectedFace={this.props.selectedFace}
                   selectedPolyColorChange={this.props.selectedPolyColorChange}
+                  noticeMessage={this.props.noticeMessage}
                 />
               </section>
               <section className={styles.boardSection}>

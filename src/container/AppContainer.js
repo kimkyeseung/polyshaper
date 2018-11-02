@@ -93,8 +93,8 @@ const mapDispatchToProps = dispatch => {
       }, 1200);
     },
 
-    selectedPolyColorChange(color) {
-      dispatch(selectedPolyColorChange(color));
+    selectedPolyColorChange(color, poly) {
+      dispatch(selectedPolyColorChange(color, poly));
     }
   };
 };

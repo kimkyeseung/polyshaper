@@ -38,6 +38,7 @@ class App extends Component {
                   setBackgroundPoly={this.props.setBackgroundPoly}
                   downloadFlattenImage={this.props.downloadFlattenImage}
                   selectedLayer={this.props.selectedLayer}
+                  faceSelectHandler={this.props.faceSelectHandler}
                   selectedFace={this.props.selectedFace}
                   selectedPolyColorChange={this.props.selectedPolyColorChange}
                 />
@@ -64,6 +65,8 @@ class App extends Component {
                   downloadFlattenImage={this.props.downloadFlattenImage}
                   selectedVertexAdjustPosition={this.props.selectedVertexAdjustPosition}
                   faceSelectHandler={this.props.faceSelectHandler}
+                  selectedFace={this.props.selectedFace}
+                  selectedPolyColorChange={this.props.selectedPolyColorChange}
                   layerSelectHandler={this.props.layerSelectHandler}
                   noticeMessage={this.props.noticeMessage}
                 />

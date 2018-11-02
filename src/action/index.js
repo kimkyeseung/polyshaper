@@ -104,9 +104,10 @@ export const noticeMessage = message => {
   };
 };
 
-export const selectedPolyColorChange = color => {
+export const selectedPolyColorChange = (color, poly) => {
   return {
     type: SELECTED_POLY_COLOR_CHANGE,
-    color
+    color,
+    poly
   };
 };

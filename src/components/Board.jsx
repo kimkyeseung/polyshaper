@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styles from './style/board.module.scss';
+import { timingSafeEqual } from 'crypto';
 
 class Board extends Component {
   constructor(props) {
@@ -108,11 +109,23 @@ class Board extends Component {
   }
 
   handleMouseUp(ev) {
+    const vertexNode = this.props.vertexNode.slice();
+    if (this.props.polyEditMode && this.state.selectedVertexIndex > 0 && ev.metaKey) {
+      const faceNode = this.props.faceNode.slice();
+      for (let i = 0; i < faceNode.length; i++) {
+        if (faceNode[i].vertices.indexOf(this.state.selectedVertexIndex) > -1) {
+          console.log(faceNode[i].vertices);
+          let color = this.getColorAverage(vertexNode[faceNode[i].vertices[0]].x, vertexNode[faceNode[i].vertices[0]].y, vertexNode[faceNode[i].vertices[1]].x, vertexNode[faceNode[i].vertices[1]].y, vertexNode[faceNode[i].vertices[2]].x, vertexNode[faceNode[i].vertices[2]].y);
+          this.props.selectedPolyColorChange(`rgb(${color.r}, ${color.g}, ${color.b})`, i);
+          this.props.noticeMessage('Get Average Color');
+        }
+      }
+    }
+
     this.setState({
       isMousedown: false,
       selectedVertexIndex: -1
     });
-    const vertexNode = this.props.vertexNode.slice();
     if (this.props.polyEditMode) {
       // if (this.state.selectedVertexIndex) {
       //   const { x, y } = this.snapToPoint(ev.nativeEvent.offsetX, ev.nativeEvent.offsetY, vertexNode);
@@ -334,11 +347,22 @@ class Board extends Component {
   drawEditModeVertex() { //draw vertices when editmode
     const context = this.editModeVertexLayer.current.getContext('2d');
     const vertexNode = this.props.vertexNode.slice();
+    const selectedFaceVertices = this.props.selectedFace ? this.props.selectedFace.vertices.slice() : null;
     context.clearRect(0, 0, this.canvas.current.width, this.canvas.current.height);////
+    if (selectedFaceVertices) {
+      context.beginPath();
+      context.moveTo(vertexNode[selectedFaceVertices[0]].x, vertexNode[selectedFaceVertices[0]].y);
+      context.lineTo(vertexNode[selectedFaceVertices[1]].x, vertexNode[selectedFaceVertices[1]].y);
+      context.lineTo(vertexNode[selectedFaceVertices[2]].x, vertexNode[selectedFaceVertices[2]].y);
+      context.closePath();
+      context.strokeStyle = 'orange';
+      context.stroke();
+    }
     vertexNode.forEach(vertex => {
       context.beginPath();
       context.moveTo(vertex.x, vertex.y);
       context.arc(vertex.x, vertex.y, 3, 0, Math.PI * 2);
+      context.closePath();
       context.fillStyle = 'red';
       context.fill();
     });

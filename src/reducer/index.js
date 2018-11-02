@@ -82,6 +82,9 @@ const reducer = (state = defaultState, action) => {
 
     case EDIT_MODE_TOGGLE: {
       newState.polyEditMode = action.on;
+      if (!action.on) {
+        newState.selectedFace = null;
+      }
       return newState;
     }
 
@@ -139,8 +142,12 @@ const reducer = (state = defaultState, action) => {
     }
 
     case SELECTED_POLY_COLOR_CHANGE: {
-      newState.faceNode[newState.selectedFace.id].backgroundColor = action.color;
-      newState.selectedFace.backgroundColor = action.color;
+      if (action.poly > -1) {
+        newState.faceNode[action.poly].backgroundColor = action.color;
+      } else {
+        newState.faceNode[newState.selectedFace.id].backgroundColor = action.color;
+        newState.selectedFace.backgroundColor = action.color;
+      }
       return newState;
     }
 

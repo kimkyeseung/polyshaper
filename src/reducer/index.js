@@ -11,7 +11,8 @@ import {
   SELECT_LAYER,
   SELECT_FACE,
   ADJUST_VERTEX_POSITION,
-  NOTICE_MESSAGE
+  NOTICE_MESSAGE,
+  SELECTED_POLY_COLOR_CHANGE
 } from '../constants/actionTypes';
 import autoPopulate from '../lib/autoPopulate';
 
@@ -128,6 +129,12 @@ const reducer = (state = defaultState, action) => {
       } else {
         newState.message.shift();
       }
+      return newState;
+    }
+
+    case SELECTED_POLY_COLOR_CHANGE: {
+      newState.faceNode[newState.selectedFace.id].backgroundColor = action.color;
+      newState.selectedFace.backgroundColor = action.color;
       return newState;
     }
 

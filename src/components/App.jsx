@@ -39,6 +39,7 @@ class App extends Component {
                   downloadFlattenImage={this.props.downloadFlattenImage}
                   selectedLayer={this.props.selectedLayer}
                   selectedFace={this.props.selectedFace}
+                  selectedPolyColorChange={this.props.selectedPolyColorChange}
                 />
               </section>
               <section className={styles.boardSection}>

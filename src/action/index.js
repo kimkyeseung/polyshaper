@@ -9,7 +9,8 @@ import {
   SELECT_LAYER,
   SELECT_FACE,
   ADJUST_VERTEX_POSITION,
-  NOTICE_MESSAGE
+  NOTICE_MESSAGE,
+  SELECTED_POLY_COLOR_CHANGE
 } from '../constants/actionTypes';
 
 let faceId = 0;
@@ -100,5 +101,12 @@ export const noticeMessage = message => {
   return {
     type: NOTICE_MESSAGE,
     message
+  };
+};
+
+export const selectedPolyColorChange = color => {
+  return {
+    type: SELECTED_POLY_COLOR_CHANGE,
+    color
   };
 };

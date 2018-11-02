@@ -11,6 +11,10 @@ export class Panel extends Component {
       leading: false,
       trailing: true
     });
+    this.handlePolyColorSelect = debounce(this.handlePolyColorSelect.bind(this), 500, {
+      leading: false,
+      trailing: true
+    });
     this.handleSizeChange = debounce(this.handleSizeChange.bind(this), 500);
   }
 
@@ -40,6 +44,10 @@ export class Panel extends Component {
 
   handleAutoPopulateButtonClick() {
     this.props.autoPopulate();
+  }
+
+  handlePolyColorSelect(color) {
+    this.props.selectedPolyColorChange(color);
   }
 
   render() {
@@ -101,7 +109,14 @@ export class Panel extends Component {
           this.props.selectedFace 
           ? <fieldset className={styles.colorPick}>
             <legend>Indivisual Poly Setting</legend>
-            <ChromePicker color={this.props.selectedFace.backgroundColor}/>
+            <ChromePicker
+              color={this.props.selectedFace.backgroundColor}
+              disableAlpha={true}
+              onChangeComplete={color => {
+                let rgb = `rgb(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}`;
+                this.handlePolyColorSelect(rgb);
+              }}
+            />
           </fieldset>
           : null
         }

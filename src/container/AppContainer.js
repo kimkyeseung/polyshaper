@@ -12,7 +12,8 @@ import {
   layerSelectHandler,
   faceSelectHandler,
   selectedVertexAdjustPosition,
-  noticeMessage
+  noticeMessage,
+  selectedPolyColorChange
 } from '../action';
 import App from '../components/App';
 
@@ -90,7 +91,10 @@ const mapDispatchToProps = dispatch => {
       setTimeout(() => {
         dispatch(noticeMessage());
       }, 1200);
+    },
 
+    selectedPolyColorChange(color) {
+      dispatch(selectedPolyColorChange(color));
     }
   };
 };

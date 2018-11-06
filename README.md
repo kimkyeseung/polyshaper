@@ -38,7 +38,6 @@ npm start
 - Redux 라이브러리를 사용한 Flux 아키텍처 기반 설계를 하였습니다.
 - React, Webpack, CSS Modules을 사용한 컴포넌트 베이스 UI 아키텍처를 구현하였습니다.
 - HTML5 Canvas를 이용하여 그래픽 아트웍을 구현하였습니다.
-- 
 
 ## Continuous Integration
 - 소스관리/빌드/테스트/배포의 지속적인 통합을 위한 CircleCI를 사용하였습니다.

@@ -98,7 +98,7 @@ export class Panel extends Component {
             type="range"
             id="cellsize"
             name="cellsize"
-            min="6"
+            min="10"
             max="200"
             defaultValue={this.props.backgroundCellSize}
             step="2"

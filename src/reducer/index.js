@@ -12,7 +12,8 @@ import {
   SELECT_FACE,
   ADJUST_VERTEX_POSITION,
   NOTICE_MESSAGE,
-  SELECTED_POLY_COLOR_CHANGE
+  SELECTED_POLY_COLOR_CHANGE,
+  DELETE_POLY
 } from '../constants/actionTypes';
 import autoPopulate from '../lib/autoPopulate';
 
@@ -146,8 +147,19 @@ const reducer = (state = defaultState, action) => {
         newState.faceNode[action.poly].backgroundColor = action.color;
       } else {
         newState.faceNode[newState.selectedFace.id].backgroundColor = action.color;
-        newState.selectedFace.backgroundColor = action.color;
       }
+      newState.selectedFace.backgroundColor = action.color;
+      return newState;
+    }
+
+    case DELETE_POLY: {
+      newState.faceNode.splice(newState.faceNode.findIndex(value => value.id === action.poly.id), 1);
+      newState.vertexNode = newState.vertexNode.reduce((accom, value, index, array) => {
+        if (value.id !== action.poly.vertices[0] && value.id !== action.poly.vertices[1] && value.id !== action.poly.vertices[2]) {
+          accom.push(value);
+        }
+        return accom;
+      }, []);
       return newState;
     }
 

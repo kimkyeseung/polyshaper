@@ -2,10 +2,11 @@
 $alpha: .7;
 
 .message {
-  position: absolute;
+  position: fixed;
   top: 30px;
   left: 30px;
   padding: 20px;
+  z-index: 20;
   border: 1px solid $main-color;
   color: $main-color;
   font-size: 20px;

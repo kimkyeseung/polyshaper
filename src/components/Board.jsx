@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import styles from './style/board.module.scss';
-import { timingSafeEqual } from 'crypto';
 
 class Board extends Component {
   constructor(props) {
@@ -33,7 +32,6 @@ class Board extends Component {
   }
 
   handleKeyDown(ev) {
-
     if (ev.metaKey && ev.key === 'e') {
       if (this.props.polyEditMode) {
         this.props.noticeMessage('Change to Add Mode');
@@ -60,9 +58,10 @@ class Board extends Component {
     if (this.props.polyEditMode) {
       console.log(ev.key, this.props.selectedFace);
       if (this.props.selectedFace && ev.key === 'Escape') {
-        console.log('whi?');
         this.props.faceSelectHandler();
         this.props.noticeMessage('Poly Deselected');
+      } else if (this.props.selectedFace && ev.key === 'Backspace') {
+        this.props.deletePolyHandler(this.props.selectedFace);
       }
     }
   }
@@ -70,7 +69,7 @@ class Board extends Component {
   handleKeyUp(ev) {
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     this.drawPoly();
     if (this.props.polyEditMode) {
       this.drawEditModeVertex();
@@ -112,11 +111,10 @@ class Board extends Component {
 
   handleMouseUp(ev) {
     const vertexNode = this.props.vertexNode.slice();
-    if (this.props.polyEditMode && this.state.selectedVertexIndex > 0 && ev.metaKey) {
+    if (this.props.polyEditMode && this.state.selectedVertexIndex > -1 && ev.metaKey) {
       const faceNode = this.props.faceNode.slice();
       for (let i = 0; i < faceNode.length; i++) {
         if (faceNode[i].vertices.indexOf(this.state.selectedVertexIndex) > -1) {
-          console.log(faceNode[i].vertices);
           let color = this.getColorAverage(vertexNode[faceNode[i].vertices[0]].x, vertexNode[faceNode[i].vertices[0]].y, vertexNode[faceNode[i].vertices[1]].x, vertexNode[faceNode[i].vertices[1]].y, vertexNode[faceNode[i].vertices[2]].x, vertexNode[faceNode[i].vertices[2]].y);
           this.props.selectedPolyColorChange(`rgb(${color.r}, ${color.g}, ${color.b})`, i);
           this.props.noticeMessage('Get Average Color');

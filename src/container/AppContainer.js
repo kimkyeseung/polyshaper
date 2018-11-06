@@ -13,7 +13,8 @@ import {
   faceSelectHandler,
   selectedVertexAdjustPosition,
   noticeMessage,
-  selectedPolyColorChange
+  selectedPolyColorChange,
+  deletePolyHandler
 } from '../action';
 import App from '../components/App';
 
@@ -95,6 +96,10 @@ const mapDispatchToProps = dispatch => {
 
     selectedPolyColorChange(color, poly) {
       dispatch(selectedPolyColorChange(color, poly));
+    },
+
+    deletePolyHandler(poly) {
+      dispatch(deletePolyHandler(poly));
     }
   };
 };

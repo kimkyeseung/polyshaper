@@ -112,7 +112,7 @@ class Upload extends Component {
         onDragLeave={this.handleDragLeave}
       >
         <h2>drop the image file to here</h2>
-        <input type="file" name="upload" onChange={this.imageFileValidater}/>
+        <input type="file" name="upload" onChange={this.imageFileValidater} value={null}/>
       </div>
     );
   }

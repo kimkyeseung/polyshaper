@@ -10,7 +10,8 @@ import {
   SELECT_FACE,
   ADJUST_VERTEX_POSITION,
   NOTICE_MESSAGE,
-  SELECTED_POLY_COLOR_CHANGE
+  SELECTED_POLY_COLOR_CHANGE,
+  DELETE_POLY
 } from '../constants/actionTypes';
 
 let faceId = 0;
@@ -108,6 +109,13 @@ export const selectedPolyColorChange = (color, poly) => {
   return {
     type: SELECTED_POLY_COLOR_CHANGE,
     color,
+    poly
+  };
+};
+
+export const deletePolyHandler = poly => {
+  return {
+    type: DELETE_POLY,
     poly
   };
 };

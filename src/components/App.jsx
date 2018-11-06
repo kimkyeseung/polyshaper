@@ -70,6 +70,7 @@ class App extends Component {
                   selectedPolyColorChange={this.props.selectedPolyColorChange}
                   layerSelectHandler={this.props.layerSelectHandler}
                   noticeMessage={this.props.noticeMessage}
+                  deletePolyHandler={this.props.deletePolyHandler}
                 />
                 <button onClick={this.resetPicture.bind(this)} style={{display: 'block', margin: '40px auto'}}>Reset Picture</button>
               </section>

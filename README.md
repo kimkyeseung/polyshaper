@@ -58,6 +58,9 @@ netlify를 이용하여 github repository를 배포하였습니다.
 ## Planning
 - Trello를 이용하여 일정을 관리하여 진행하였습니다. 
 
+## Test
+Jest와 Enzyme를 이용하여 Reducer및 Component 단위 테스트 구현
+
 ## Things to do
 2주 동안의 완성을 목표로 좀 더 완성도를 높은 어플리케이션을 구현하고 싶어 Server는 애초에 기획에서 제외하였습니다. 
 가능한 정교하고 디테일하게 기능 구현을 하려고 하였으며 기능 구현 가능 여부가 불확실했던 상황이있었지만 잘 마무리 되어서 기쁘게 생각합니다.
@@ -69,4 +72,3 @@ netlify를 이용하여 github repository를 배포하였습니다.
 - 전반적인 UI 개선으로 좋은 사용자 경험 제시하기
 - Code Refactoring
 - Integration Test
-

@@ -111,94 +111,7 @@ getColorAverage(x1, y1, x2, y2, x3, y3) {
 ### 자동으로 완성시키기 (Auto Polpulate)
 아트웍이라는 것은 무슨 툴을 사용하더라도 노력과 시간이 필요할 수 밖에 없습니다. 색상의 값을 자동으로 구해준다 하더라도 각 폴리의 모든 꼭지점은 사용자가 클릭한 좌표를 토대로 존재하기 때문에 모든 점을 사용자가 클릭해야 한다는 점이 오래걸리고 귀찮게 여겨지는게 당연하다고 생각하였습니다. 그래서 저는 유저가 몇개의 폴리를 만들고 나면 그 폴리를 토대로 자동으로 완성되는 기능이 있기를 바랐습니다. 결론적으로 유저가 만든 폴리의 좌표를 토대로 남은 부분을 자동으로 채울 수는 없었지만 자동 완성된 배경을 하위 레이어로 추가하는 방법을 선택하였습니다.
 
-```js
-const autoPopulate = data => {
-  const result = cloneDeep(data);
-  const backgroundVertexNode = [];
-  let row = 0;
-  let col = 0;
-  let maxCols = result.backgroundMaxCols;
-  let maxRows = result.backgroundMaxRows;
-  if (!maxCols && !maxRows) {
-    return result;
-  }
-  let amount = maxCols * maxRows;
-  for (let i = 0; i < amount; i++) {
-    let vertex = {};
-    if (row % 2 === 0) {
-      vertex.x = (col * result.backgroundCellSize) - result.backgroundCellSize;
-    } else {
-      vertex.x = (col * result.backgroundCellSize) - result.backgroundCellSize - result.backgroundCellSize / 2;
-    }
-    vertex.x = vertex.x + (Math.random() - 0.5) * result.backgroundVariance * result.backgroundCellSize * 2;
-    vertex.y = (row * result.backgroundCellSize * 0.865) - result.backgroundCellSize;
-    vertex.y = vertex.y + (Math.random() - 0.5) * result.backgroundVariance * result.backgroundCellSize * 2;
-    vertex.col = col;
-    vertex.row = row;
-    backgroundVertexNode.push(vertex);
-    col++;
-    if ((i + 1) % maxCols === 0) {
-      row++;
-      col = 0;
-    }
-  }
-  result.backgroundVertexNode = backgroundVertexNode;
-  return result;
-}
-```
-
-인자로 받는 ```data```는 ```backgroundCellSize```, ```backgroundVariance```가 입력되어 있는 state 객체입니다. CellSize는 완성될 폴리 셀의 크기, Variance는 셀의 모양의 다양성입니다. 이 함수는 [Low Poly Background](https://cojdev.github.io/lowpoly/)의 코드를 많이 참고하였습니다. Low Poly Background는 색상의 대비 정도를 결정하는 Depth도 받지만 저는 색상값은 업로드한 이미지를 기준으로 하기 때문에 Depth를 빼고 적절하게 필요한 부분만 잘 추출하였습니다. 사용자가 업로드한 이미지를 기준으로 한 width와 height와 설정한 (혹은 기본값의) CellSize와 Variance를 토대로 가로에 들어갈 Poly의 갯수와 세로에 들어갈 Poly의 갯수를 정하고 각각의 좌표를 배열로 보관합니다.
-
-```js
-drawBackground(vertices) {
-    console.log('draw bg');
-    const context = this.backgroundLayer.current.getContext('2d');
-    let maxCols = this.props.backgroundMaxCols;
-    let colorData;
-    for (let i = 0; i < vertices.length; i++) {
-      if (vertices[i].row % 2 === 0 && vertices[i + maxCols + 1] && vertices[i].col < maxCols - 1) {
-        context.beginPath();
-        context.moveTo(vertices[i].x, vertices[i].y);
-        context.lineTo(vertices[i + maxCols].x, vertices[i + maxCols].y);
-        context.lineTo(vertices[i + maxCols + 1].x, vertices[i + maxCols + 1].y);
-        context.closePath();
-        colorData = this.getColorAverage(vertices[i].x, vertices[i].y, vertices[i + maxCols].x, vertices[i + maxCols].y, vertices[i + maxCols + 1].x, vertices[i + maxCols + 1].y);
-        context.fillStyle = `rgb(${colorData.r}, ${colorData.g}, ${colorData.b})`;
-        context.fill();
-
-        context.beginPath();
-        context.moveTo(vertices[i].x, vertices[i].y);
-        context.lineTo(vertices[i + 1].x, vertices[i + 1].y);
-        context.lineTo(vertices[i + maxCols + 1].x, vertices[i + maxCols + 1].y);
-        context.closePath();
-        colorData = this.getColorAverage(vertices[i].x, vertices[i].y, vertices[i + 1].x, vertices[i + 1].y, vertices[i + maxCols + 1].x, vertices[i + maxCols + 1].y);
-        context.fillStyle = `rgb(${colorData.r}, ${colorData.g}, ${colorData.b})`;
-        context.fill();
-
-      } else if (vertices[i - 1] && vertices[i + maxCols] && vertices[i].col > 0) {
-        context.beginPath();
-        context.moveTo(vertices[i].x, vertices[i].y);
-        context.lineTo(vertices[i - 1].x, vertices[i - 1].y);
-        context.lineTo(vertices[i + maxCols - 1].x, vertices[i + maxCols - 1].y);
-        context.closePath();
-        colorData = this.getColorAverage(vertices[i].x, vertices[i].y, vertices[i - 1].x, vertices[i - 1].y, vertices[i + maxCols - 1].x, vertices[i + maxCols - 1].y);
-        context.fillStyle = `rgb(${colorData.r}, ${colorData.g}, ${colorData.b})`;
-        context.fill();
-
-        context.beginPath();
-        context.moveTo(vertices[i].x, vertices[i].y);
-        context.lineTo(vertices[i + maxCols].x, vertices[i + maxCols].y);
-        context.lineTo(vertices[i + maxCols - 1].x, vertices[i + maxCols - 1].y);
-        context.closePath();
-        colorData = this.getColorAverage(vertices[i].x, vertices[i].y, vertices[i + maxCols].x, vertices[i + maxCols].y, vertices[i + maxCols - 1].x, vertices[i + maxCols - 1].y);
-        context.fillStyle = `rgb(${colorData.r}, ${colorData.g}, ${colorData.b})`;
-        context.fill();
-      }
-    }
-  }
-```
-
-```autoPopulate```로 만들어진 backgroundVertexNode 배열을 토대로 폴리 이미지를 그려내는 함수입니다. 그리는 방식은 삼각형 한 번, 역삼각형 한 번 교차로 그려냅니다. 처음 그렸던 삼각형의 오른쪽 두 점은 그 다음 그려질 역삼각형의 왼쪽 두 점이 됩니다. 그 역삼각형의 오른쪽 두 점은 다시 오른쪽에 위치할 삼각형의 왼쪽 두 점이 됩니다. col이 maxCol이 되면 col은 0이되고 low는 + 1 되어 두 번째 줄부터는 역삼각형, 삼각형의 순서로 다시 삼각형이 그려지게 됩니다. 그렇게 화면을 가득 채울때까지 반복하게 됩니다.
+그리는 방식은 삼각형 한 번, 역삼각형 한 번 교차로 그려냅니다. 처음 그렸던 삼각형의 오른쪽 두 점은 그 다음 그려질 역삼각형의 왼쪽 두 점이 됩니다. 그 역삼각형의 오른쪽 두 점은 다시 오른쪽에 위치할 삼각형의 왼쪽 두 점이 됩니다. ```col```이 ```maxCol```이 되면 ```col```은 0이되고 ```low```는 + 1 되어 두 번째 줄부터는 역삼각형, 삼각형의 순서로 다시 삼각형이 그려지게 됩니다. 그렇게 화면을 가득 채울때까지 반복하게 됩니다.
 
 ![일러스트레이터로 구현한 폴리 이미지 드로잉 메커니즘](./public/ref_image02_1.gif)
 ![일러스트레이터로 구현한 폴리 이미지 드로잉 메커니즘](./public/ref_image02_2.gif)
@@ -209,39 +122,7 @@ drawBackground(vertices) {
 ### 캔버스에 그려진 폴리를 선택하기
 캔버스에 그려진 이미지는 말 그대로 이미지이기 때문에 DOM의 엘리먼트처럼 따로 이벤트를 추가하거나 선택할 수 있는 개념이 아니었습니다. 그럼에도 불구하고 저는 각각의 폴리를 선택할 수 있어야 한다고 생각했습니다. 디지털 작업이니만큼 한 번 추가한 것으로 끝이 아니라 편집 및 수정이 가능해야만 툴로써의 가치가 있다고 생각하였기 때문입니다. 각 폴리 셀들은 x, y의 세 좌표로 이루어져 하나의 면을 구성하고 있습니다. 마우스를 폴리 위에 올렸을 때 마우스의 좌표(x, y)가 해당 폴리 위에 있는지 아닌지 확인하는 함수를 만들어야 했습니다.
 
-```js
-selectPoly(x, y) {
-    const vector = (from, to) => [to[0] - from[0], to[1] - from[1]];
-    const dot = (u, v) => u[0] * v[0] + u[1] * v[1];
-    const faceNode = this.props.faceNode.slice();
-    const vertexNode = this.props.vertexNode.slice();
-    for (let i = 0; i < faceNode.length; i++) {
-      let p = [x, y];
-      let a = [vertexNode[faceNode[i].vertices[0]].x, vertexNode[faceNode[i].vertices[0]].y];
-      let b = [vertexNode[faceNode[i].vertices[1]].x, vertexNode[faceNode[i].vertices[1]].y];
-      let c = [vertexNode[faceNode[i].vertices[2]].x, vertexNode[faceNode[i].vertices[2]].y];
-      let v0 = vector(a, c);
-      let v1 = vector(a, b);
-      let v2 = vector(a, p);
-      let dot00 = dot(v0, v0);
-      let dot01 = dot(v0, v1);
-      let dot02 = dot(v0, v2);
-      let dot11 = dot(v1, v1);
-      let dot12 = dot(v1, v2);
-      let invDenom = 1.0 / (dot00 * dot11 - dot01 * dot01);
-      let u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-      let v = (dot00 * dot12 - dot01 * dot02) * invDenom;
-      if ((u >= 0) && (v >= 0) && (u + v < 1)) {
-        this.props.faceSelectHandler(faceNode[i]);
-        this.props.noticeMessage(`Select Indivisual Poly No. ${i}`);
-        i = faceNode.length;
-      }
-    }
-  }
-```
-
-```selectPoly()``` 함수는 [이 곳](http://blackpawn.com/texts/pointinpoly/default.html)을 참고하여 점이 삼각형 위에 위치하면 true를, 그렇지 않으면 false를 리턴하는 함수를 변형시켜 적용하였습니다. 
-
+[이 곳](http://blackpawn.com/texts/pointinpoly/default.html)을 참고하여 점이 삼각형 위에 위치하면 true를, 그렇지 않으면 false를 리턴하는 함수를 변형시켜 적용하였습니다. 
 
 ## Things to do
 2주 동안의 완성을 목표로 좀 더 완성도를 높은 어플리케이션을 구현하고 싶어 Server는 애초에 기획에서 제외하였습니다. 

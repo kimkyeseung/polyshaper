@@ -66,42 +66,6 @@ Jest와 Enzyme를 이용하여 Reducer및 Component 단위 테스트 구현
 ### 사각형이 아닌 영역의 색상값 추출하기
 Polyshaper의 처음 기획 당시 가장 큰 관건이었습니다. 유저가 클릭하여 만들어낸 임의의 삼각형의 색상값만 추출이 되지 않는다면 이 프로젝트의 시작조차할 수 없었을 것입니다. Stack Overflow와 여러 기술 블로그, 개발 커뮤니티를 찾아다녔지만 저와 같은 목적으로 저와 같은 고민을 하는 사람은 없었습니다. 다행히 생각보다 쉽게 해결되었습니다.
 
-```js
-getColorAverage(x1, y1, x2, y2, x3, y3) {
-    const colorContext = this.colorCanvas.current.getContext('2d');
-    colorContext.save();
-    colorContext.beginPath();
-    colorContext.moveTo(x1, y1);
-    colorContext.lineTo(x2, y2);
-    colorContext.lineTo(x3, y3);
-    colorContext.closePath();
-    colorContext.clip();
-    let image = document.createElement('img');
-    image.src = this.props.uploadedImage;
-    colorContext.drawImage(image, 0, 0);
-    let biggestX = Math.max(x1, x2, x3);
-    let biggestY = Math.max(y1, y2, y3);
-    let smallestX = Math.min(x1, x2, x3);
-    let smallestY = Math.min(y1, y2, y3);
-    let colorData = colorContext.getImageData(smallestX, smallestY, Math.ceil(biggestX - smallestX) || 1, Math.ceil(biggestY - smallestY) || 1);
-    let count = 0;
-    const rgb = { r: 0, g: 0, b: 0 };
-    for (let i = -4; i < colorData.data.length; i += 20) {
-      if (colorData.data[i + 3] > 200) {
-        ++count;
-        rgb.r += colorData.data[i];
-        rgb.g += colorData.data[i + 1];
-        rgb.b += colorData.data[i + 2];
-      }
-    }
-    rgb.r = ~~(rgb.r / count);
-    rgb.g = ~~(rgb.g / count);
-    rgb.b = ~~(rgb.b / count);
-    colorContext.restore();
-    return rgb;
-  }
-```
-
 색상을 추출하기 위해선 빈 캔버스에 해당 이미지를 새로 그려야했습니다. 폴리가 그려질 캔버스와 같은 위치에 같은 크기의 캔버스를 포개고 세개의 점을 좌표로 받아서 삼각형을 만든 후 ```clip()```으로 이미지를 삼각형만큼 오렸습니다. 처음엔 ```createElement(‘img’)```  -> ```drawImage()``` -> ```beginPath()``` -> ```closePath()``` -> ```clip()``` -> ```getImageData()``` 순으로 코드를 작성하였는데 생각대로 진행되지 않았고 ```clip()``` 이 ```drawImage()```보다 선행되어야만 제가 원하는 결과를 얻을 수 있었습니다. 
 
 ![삼각형의 이미지 데이타 얻기](./public/ref_image01.png)

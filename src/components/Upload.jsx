@@ -111,8 +111,9 @@ class Upload extends Component {
         onDragOver={this.handleDragOver}
         onDragLeave={this.handleDragLeave}
       >
-        <h2>drop the image file to here</h2>
-        <input type="file" name="upload" onChange={this.imageFileValidater} value={null}/>
+        <h2>Drop the image file here</h2>
+        <input type="file" name="upload" id="upload" onChange={this.imageFileValidater}/>
+        <label htmlFor="upload" className="">or Select a image file</label>
       </div>
     );
   }

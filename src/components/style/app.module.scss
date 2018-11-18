@@ -17,6 +17,7 @@ button {
 
 body {
   background: #222;
+  font-family: 'Lato', sans-serif;
 }
 
 .App {
@@ -35,7 +36,6 @@ body {
 
 .boardSection {
   width: calc(100% - 250px);
-  // padding: 10px;
 }
 
 .panelSection {

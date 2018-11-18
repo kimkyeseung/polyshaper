@@ -83,7 +83,6 @@ class Upload extends Component {
 
   handleDragEnter(ev) {
     ev.preventDefault();
-    // ev.stopPropagation();
     
     if (!this.state.active) {
       this.setState({

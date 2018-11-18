@@ -220,7 +220,7 @@ class Board extends Component {
     });
   }
 
-  getColorAverage(x1, y1, x2, y2, x3, y3) {//return object : {r: 00, g:00, b: 00};
+  getColorAverage(x1, y1, x2, y2, x3, y3) {
     const colorContext = this.colorCanvas.current.getContext('2d');
     colorContext.save();
     colorContext.beginPath();
@@ -326,7 +326,6 @@ class Board extends Component {
   }
 
   drawPoly() {//draw colored poly when component updated
-    console.log('drawpoly when component updated');
     const context = this.canvas.current.getContext('2d');
     const vertexNode = this.props.vertexNode.slice();
     const faceNode = this.props.faceNode.slice();
@@ -348,7 +347,7 @@ class Board extends Component {
     const context = this.editModeVertexLayer.current.getContext('2d');
     const vertexNode = this.props.vertexNode.slice();
     const selectedFaceVertices = this.props.selectedFace ? this.props.selectedFace.vertices.slice() : null;
-    context.clearRect(0, 0, this.canvas.current.width, this.canvas.current.height);////
+    context.clearRect(0, 0, this.canvas.current.width, this.canvas.current.height);
     if (selectedFaceVertices) {
       context.beginPath();
       context.moveTo(vertexNode[selectedFaceVertices[0]].x, vertexNode[selectedFaceVertices[0]].y);
@@ -369,7 +368,6 @@ class Board extends Component {
   }
 
   drawBackground(vertices) {
-    console.log('draw bg');
     const context = this.backgroundLayer.current.getContext('2d');
     let maxCols = this.props.backgroundMaxCols;
     let colorData;

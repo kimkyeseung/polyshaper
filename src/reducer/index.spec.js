@@ -1,5 +1,5 @@
-import deepFreeze from 'deep-freeze'
-import reducer from './index'
+import deepFreeze from 'deep-freeze';
+import reducer from './index';
 import { uploadImageHandler, makeFace, makeVertex, editMode, autoPopulate, setBackgroundPoly, downloadFlattenImage } from '../action';
 import { defaultState } from './index';
 
@@ -237,7 +237,8 @@ describe('reducer', () => {
 
     it('should return true state when argument is true', () => {
       const stateFalse = {
-        polyEditMode: false
+        polyEditMode: false,
+        selectedFace: null
       };
       
       const stateTrue = {

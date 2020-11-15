@@ -1,4 +1,4 @@
-# [Polyshaper](https://polyshaper.me/)
+# [Polyshaper](https://polyshaper.netlify.app/)
 
 ![Polyshaper](./public/image01.gif)
 
@@ -6,7 +6,7 @@
 Polyshaper는 업로드한 이미지를 기반으로 색상을 자동으로 채워주어 일러스트레이터나 포토샵보다 편하고 빠르게 로우 폴리 이미지를 제작할 수 있는 로우 폴리 이미지 제작 어플리케이션입니다.
 
 ## Tryout
-<https://polyshaper.me>
+<https://polyshaper.netlify.app/>
 
 ## Period
 2018년 10월 20일 ~ 11월 2일
